@@ -9,22 +9,22 @@ mean(x1[-2])
 columns <- data.frame("one" = x1, "two" = c(2, 1, 4, 7, 8))
 
 # creates a new list using the columns df and a logical vector
-my.list <- list(columns, c(T, F, NA, T, F))
+My.list <- list(columns, c(T, F, NA, T, F))
 
-my.list[[2]]$one
+# lapply to sum element wise across rows of the dataframe
+# function finds value in column 1 and column 2 then adds them
+f.sum = function(x, output) {
+  first = My.list[[1]][[1]]
+  second = My.list[[1]][[2]]
+  
+  result = first + second
+}
 
+# using the newly created function across the rows with lapply
+lapply(My.list[ 1 ], FUN=f.sum)
 
-my.list[[1]]$two
+# here is a solution using regular apply
+apply(My.list[[ 1 ]], 1, FUN=function(x) c(sum(x)))
 
-
-# lapply
-lapply(my.list[1], '[',sum)
-
-
-
-lapply(my.list[[1]]$one, my.list[[1]]$two, sum)
-
-
-
-lapply(my.list[1], '[', 1, )
-
+# This also works, but is not accomplished using lapply
+rowSums(My.list[[ 1 ]])
