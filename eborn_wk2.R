@@ -1,13 +1,106 @@
+# Eric Born
+# Part C:
+
+# Import libraries
+library(googleAnalyticsR)
+library(ggplot2)
+library(plotly)
+
+# Setup account auth
+ga_auth()
+my_accounts <- ga_account_list()
+my_id <- my_accounts$viewId[1]
+
+# set date ranges
+start_date <- "2019-09-02"
+end_date <- "2019-09-16"
+
+# 1)
+# Gathers data based upon the devices OS
+os <- google_analytics(my_id, date_range=c(start_date, end_date), 
+                       metrics = metrics, 
+                       dimensions = "operatingSystem")
+
+# Generates a bar plot of the sessions by OS data
+plot_ly(data = os, y = ~operatingSystem, x = ~sessions,
+        type = 'bar', text = os$sessions, textposition = 'auto') %>%
+  layout(title = 'Total sessions by OS',
+         yaxis = list(title = 'OS Type'), xaxis = list(title = 'Sessions'))
+
+# 2)
+# Gathers data based upon new vs returning visitors
+visitor <- google_analytics(my_id, date_range=c(start_date, end_date), 
+                            metrics = 'users', 
+                            dimensions = 'userType')
+
+# Generates a bar plot of the sessions by visitor type
+plot_ly(data = visitor, y = ~userType, x = ~users,
+        type = 'bar', text = visitor$users, textposition = 'auto') %>%
+  layout(title = 'Total Visitor by type', 
+         yaxis = list(title = 'Visitor Type'), xaxis = list(title = 'Totals'))
+
+# 3)
+# Gathers data based upon language
+language <- google_analytics(my_id, date_range=c(start_date, end_date), 
+                            metrics = 'users', 
+                            dimensions = 'language')
+
+# Generates a bar plot of the sessions by language
+plot_ly(data = language, y = ~language, x = ~users,
+        type = 'bar', text = language$users, textposition = 'auto') %>%
+  layout(title = 'Total users by language',
+         yaxis = list(title = 'Language'), xaxis = list(title = 'Users'))
+
+# 4) 
+# setup a vector with metrics to use
+mets <- c('users', 'pageviews')
+
+# setup a vector with the dimension types
+dims <- c('userType', 'language', 'operatingSystem')
+
+# creates a dataframe from the userType, language and OS dimensions
+user.table <- google_analytics(my_id, date_range=c(start_date, end_date), 
+                               metrics = mets, 
+                               dimensions = dims)
+# output the dataframe
+user.table
+
+# Part D:
+
+# Version below has no comments and is 16 lines of code
+
 # required library for downloading the stock data
-library(quantmod)  # stock price functions
+library(quantmod)
+
+# stock.data fucntion
+stock.data <- function(ticker) {
+  for (i in 1:length(ticker)) {
+    cat('\nDiv info for the', toString(ticker[i][[1]]), 'ticker\n')
+    ticker.divs <- getDividends(ticker[i][[1]], auto.assign = F)
+    ticker.matrix <- as.matrix(ticker.divs)
+    ticker.index <- tail(which(diff(ticker.matrix) > 0), 1) + 1
+    ticker.divamt <- ticker.matrix[ticker.index]
+    ticker.chgdate <- rownames(ticker.matrix)[ticker.index]
+    ticker.ntimes <- sum(ticker.matrix == ticker.matrix[ticker.index])
+    cat(
+      'currentDivAmt', ticker.divamt,
+      '\ndateDivAmtLastChanged', ticker.chgdate,
+      '\nPayoutsAtCurrDivAmt', ticker.ntimes, '\n'
+    )
+  }
+}
 
 # Full code with comments
+
+# required library for downloading the stock data
+library(quantmod)
+
 # Creates the function called stock.data.
-# This function takes 1 input which is called ticker
+# This function takes 1 input which is called ticker.
 stock.data <- function(ticker) {
   # since we want to be able to check more than 1 ticker at a time
   # We start with a for loop that iterates from 1 to the length of the
-  # ticker input.
+  # ticker input. This allows data collection for as many tickers as we want.
   for(i in 1:length(ticker)){
     # We display the tickers name at the start of the loop
     cat('\nDiv info for the', toString(ticker[i][[1]]),'ticker\n')
@@ -56,27 +149,3 @@ stock.list <- list('PG', 'msft', 'TGT')
 
 # Runs the list through the function and outputs results
 stock.data(stock.list)
-
-
-#### Version below has no comments and is 16 lines of code
-
-# required library for downloading the stock data
-library(quantmod)  # stock price functions
-
-# stock.data fucntion
-stock.data <- function(ticker) {
-  for (i in 1:length(ticker)) {
-    cat('\nDiv info for the', toString(ticker[i][[1]]), 'ticker\n')
-    ticker.divs <- getDividends(ticker[i][[1]], auto.assign = F)
-    ticker.matrix <- as.matrix(ticker.divs)
-    ticker.index <- tail(which(diff(ticker.matrix) > 0), 1) + 1
-    ticker.divamt <- ticker.matrix[ticker.index]
-    ticker.chgdate <- rownames(ticker.matrix)[ticker.index]
-    ticker.ntimes <- sum(ticker.matrix == ticker.matrix[ticker.index])
-    cat(
-      'currentDivAmt', ticker.divamt,
-      '\ndateDivAmtLastChanged', ticker.chgdate,
-      '\nPayoutsAtCurrDivAmt', ticker.ntimes, '\n'
-    )
-  }
-}
