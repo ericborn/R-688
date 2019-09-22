@@ -1,15 +1,10 @@
-# Module 3 Code
-# install.packages("pdftools")
+# Eric Born
+# CS688 week 3
+# 22 Sept 2019
+
 # install.packages("tm")
-# install.packages("SnowballC")
-# install.packages("tau")
-# install.packages("arules")
 library(tm) # Framework for text mining.
-library(SnowballC) # Provides wordStem() for stemming.
-library(dplyr) # Data preparation and pipes %>%.
-library(ggplot2) # Plot word frequencies.
-library(scales) # Common data analysis activities.
-library(pdftools)
+library(class) # Using kNN 
 
 #set the working directory
 setwd("c:/Users/TomBrody/Desktop/School/688 Web/wk3/20Newsgroups/20news-bydate-train")
@@ -61,10 +56,57 @@ full.corpus.proc[[1]]$content[3]
 
 # c)
 # document term matrix
-Mac.DTM <- DocumentTermMatrix(Mac.Corpus.Proc, control = list(
-  wordLengths=c(3,20),  # words between 3 and 20 characters long
-  bounds=list(global=c(20,Inf))  # only include words in DTM if they happen in 20 or more documents
+# words 2 characters and longer
+# only include words in DTM if they appear at least 5 times
+full.corpus.DTM <- DocumentTermMatrix(full.corpus.proc, control = list(
+  wordLengths=c(2,Inf),
+  bounds=list(global=c(5,Inf))  
 ))
-inspect(Mac.DTM)
+inspect(full.corpus.DTM)
 
+full.corpus.DTM[c(1:200),]
 
+# d)
+# First 200 documents are training, next 200 are test
+train.doc <- full.corpus.DTM[c(1:200),]
+test.doc <- full.corpus.DTM[c(201:400),]
+Tags <- factor(c(rep("Sci",100), rep("Rec",100)))
+
+test.doc[1,]
+
+# set seed for results repeatability
+set.seed(1337)
+
+# run knn with k between 2 and 7
+x <- c(2,3,4,5,6,7)
+
+for (i in x){
+  prob.test <- knn(train.doc, test.doc, Tags, k = i, prob=TRUE)
+  # Display Classification Results
+  a <- 1:length(prob.test)
+  b <- levels(prob.test)[prob.test]
+  c <- attributes(prob.test)$prob
+  d <- prob.test==Tags
+  
+  result <- data.frame(Doc=a, Predict=b,Prob=c, Correct=d)
+
+  print(paste(i, sum(prob.test==Tags)/length(Tags), sep=' '))
+}
+
+# Best value for k is 3 or 4 at around 69% accuracy
+prob.test <- knn(train.doc, test.doc, Tags, k = 3, prob=TRUE)
+
+# Display Classification Results
+a <- 1:length(prob.test)
+b <- levels(prob.test)[prob.test]
+c <- attributes(prob.test)$prob
+d <- prob.test==Tags
+
+result <- data.frame(Doc=a, Predict=b,Prob=c, Correct=d)
+
+# output only the first and last 6 rows
+result[c(1:6, 195:200),]
+
+# e)
+# k = 3, 69%
+sum(prob.test==Tags)/length(Tags)
