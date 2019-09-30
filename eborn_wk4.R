@@ -1,8 +1,8 @@
 # Eric Born
-# CS688 week 3
-# 22 Sept 2019
+# CS688 week 4
+# 30 Sept 2019
 
-install.packages('caret')
+# install.packages('caret')
 library(tm) # Framework for text mining.
 library(class) # Using kNN
 library(caret)
@@ -10,7 +10,10 @@ library(caret)
 #set the working directory
 setwd("c:/Users/TomBrody/Desktop/School/688 Web/wk3/20Newsgroups/20news-bydate-train")
 
-# a)
+#########
+# Start data setup
+#########
+
 # sci.space and rec.autos
 # load the sci.space training files
 sci.train.path <- system.file('train',"sci.space",package="tm")
@@ -39,7 +42,6 @@ rec.test.corpus <- Corpus(URISource(rec.test.files$filelist[1:100]),
 # merge all four collections of documents into a single corpus
 full.corpus <- c(sci.train.corpus, rec.train.corpus, sci.test.corpus, rec.test.corpus)
 
-# b)
 # lower case
 full.corpus.proc <- tm_map(full.corpus, content_transformer(tolower))
 # remove stopwords
@@ -55,7 +57,6 @@ full.corpus[[1]]$content[3]
 # "summary dong   dong     hear  deathknell  relativity"
 full.corpus.proc[[1]]$content[3]
 
-# c)
 # document term matrix
 # words 2 characters and longer
 # only include words in DTM if they appear at least 5 times
@@ -67,7 +68,7 @@ inspect(full.corpus.DTM)
 
 full.corpus.DTM[c(1:200),]
 
-# d)
+
 # First 200 documents are training, next 200 are test
 train.doc <- full.corpus.DTM[c(1:200),]
 test.doc <- full.corpus.DTM[c(201:400),]
@@ -88,28 +89,18 @@ c <- attributes(prob.test)$prob
 d <- prob.test==Tags
 
 result <- data.frame(Doc=a, Predict=b, Prob=c, Correct=d)
+#########
+# End data setup
+#########
 
-# output only the first and last 6 rows
-result[c(1:6, 195:200),]
-
-# e)
-# k = 3, 69%
-sum(prob.test==Tags)/length(Tags)
-
+# a)
+# create column to indicate actual class
 result$actual <- ifelse(result$Predict == 'Rec' & result$Correct == TRUE | 
 result$Predict == 'Sci' & result$Correct == FALSE, 'Rec', 'Sci')
 
+# create factors from actual and predicted
+actual <- factor(result[['actual']])
+predicted <- factor(result$Predict, labels = c('Rec', 'Sci'))
 
-
-if(result$Predict == 'Rec' & result$Correct == TRUE){
-  result$actual <- 'Rec'
-} else if (result$Predict == 'Rec' & result$Correct == FALSE){
-  result$actual <- 'Sci'
-}
-
-
-
-p_class <- factor(t_or_f, labels = c('Rec', 'Sci'))
-
-
-confusionMatrix(result$Predict, p_class)
+# use those factor objects in confusion matrix
+confusionMatrix(predicted, actual)
