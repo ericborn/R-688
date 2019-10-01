@@ -51,7 +51,7 @@ d <- data.frame(name = names(freq[head(ord,n=50)]), value=freq[head(ord,n=50)])
 server <- function(input, output) {
   # creates the render for the word cloud
   output$distPlot1 <- renderPlot({wordcloud(words = d$name, freq = d$value, min.freq = 1,
-                                max.words=50, random.order=FALSE, rot.per=0.35,
+                                random.order=FALSE, rot.per=0.35,
                                 colors=brewer.pal(8, "Dark2"))})
   # outputs the dataframe containing the 50 words and their counts
   output$summary <- renderPrint({
