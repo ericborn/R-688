@@ -104,3 +104,6 @@ predicted <- factor(result$Predict, labels = c('Rec', 'Sci'))
 
 # use those factor objects in confusion matrix
 confusionMatrix(predicted, actual)
+
+# b)
+# Code for part b is in the file called eborn_word_cloud
