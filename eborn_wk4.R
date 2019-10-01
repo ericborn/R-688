@@ -10,10 +10,6 @@ library(caret)
 #set the working directory
 setwd("c:/Users/TomBrody/Desktop/School/688 Web/wk3/20Newsgroups/20news-bydate-train")
 
-#########
-# Start data setup
-#########
-
 # sci.space and rec.autos
 # load the sci.space training files
 sci.train.path <- system.file('train',"sci.space",package="tm")
@@ -25,7 +21,7 @@ sci.train.corpus <- Corpus(URISource(sci.train.files$filelist[1:100]),
 sci.test.path <- system.file('test',"sci.space",package="tm")
 sci.test.files <- DirSource(sci.test.path)
 sci.test.corpus <- Corpus(URISource(sci.test.files$filelist[1:100]), 
-                           readerControl=list(reader=readPlain))
+                          readerControl=list(reader=readPlain))
 
 # load the rec.auto training files
 rec.train.path <- system.file('train',"rec.autos",package="tm")
@@ -67,7 +63,6 @@ full.corpus.DTM <- DocumentTermMatrix(full.corpus.proc, control = list(
 inspect(full.corpus.DTM)
 
 full.corpus.DTM[c(1:200),]
-
 
 # First 200 documents are training, next 200 are test
 train.doc <- full.corpus.DTM[c(1:200),]
