@@ -10,7 +10,7 @@ library(ggplot2)
 library(purrr)
 library(RedditExtractoR)
 
-### Place your own app name and unique codes here!!
+# app name and unique codes removed for security
 
 
 # Authenticate via access token
@@ -220,7 +220,6 @@ reddit_sent = lapply(reddit_comments$word,function(x){sentiment_bing(x)})
 # create a tibble holding the reddit sentiment
 reddit_sentiment = bind_rows(
   tibble(
-    #country = 'belize',
     score = unlist(map(reddit_sent,'score')),
     type = unlist(map(reddit_sent,'type'))
   )
