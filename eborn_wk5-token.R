@@ -8,6 +8,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(purrr)
+library(RedditExtractoR)
 
 ### Place your own app name and unique codes here!!
 
@@ -192,3 +193,45 @@ country_sentiment %>% filter(type != "Type 1") %>% group_by(country) %>%
 
 # Part B
 # 1)
+# article URL
+topic_url <- 'https://www.reddit.com/r/politics/comments/de3ger/megathread_second_whistleblower_comes_forward_in/'
+
+# 2)
+reddit_thread <- reddit_content(topic_url)
+
+# 3)
+# remove URL strings, unnest and remove stop words
+reddit_comments =  reddit_thread %>% mutate(
+  stripped_text = gsub("http\\S+","",comment)
+) %>%
+  select(stripped_text) %>%
+  tidytext::unnest_tokens(word, stripped_text) %>%
+  anti_join(tidytext::stop_words)
+
+# 4)
+# top 10 more frequent words
+reddit_comments %>%
+  count(word, sort = TRUE) %>%
+  top_n(10)
+
+# 5)
+reddit_sent = lapply(reddit_comments$word,function(x){sentiment_bing(x)})
+
+# create a tibble holding the reddit sentiment
+reddit_sentiment = bind_rows(
+  tibble(
+    #country = 'belize',
+    score = unlist(map(reddit_sent,'score')),
+    type = unlist(map(reddit_sent,'type'))
+  )
+)
+
+# output sentiment summary
+reddit_sentiment %>% filter(type != "Type 1") %>%
+  summarise(
+    Count = n(),
+    Mean = mean(score),
+    SD = sd(score),
+    max = max(score),
+    min = min(score)
+  )
