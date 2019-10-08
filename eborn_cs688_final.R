@@ -3,7 +3,11 @@
 # Web scraping NFL stats
 
 #install.packages('rvest')
+#install.packages('stringi')
 library('rvest')
+library('stringi')
+library('purrr')
+library('XML')
 
 # scrape player name, team name, position, offensive stats: yards, touch downs
 # defensive stats: interceptions, passes defended, fumbles, sacks
@@ -15,9 +19,26 @@ teamsUrl <- 'https://www.pro-football-reference.com/years/2018/'
 webpage <- read_html(teamsUrl)
 
 # one table for AFC one for NFC
-<table class="sortable stats_table now_sortable" id="AFC" data-cols-to-freeze="1">
-<table class="sortable stats_table now_sortable" id="NFC" data-cols-to-freeze="1">
+teams <- webpage %>% html_nodes("tbody") %>% html_nodes("a") %>% html_text()
 
+pattern <- '[A-Z]'
+  '[A-Z]\\w+'
+
+strsplit(teams[1], pattern)
+
+
+for(i in 1:length(teams)){
+  team.name <- teams[i]
+}
+
+
+# <table class="sortable stats_table now_sortable" id="AFC" data-cols-to-freeze="1">
+# <table class="sortable stats_table now_sortable" id="NFC" data-cols-to-freeze="1">
+
+pg <- read_html("https://en.wikipedia.org/wiki/Main_Page")
+html_nodes(pg, "a") %>% 
+  map(xml_attrs) %>% 
+  map_df(~as.list(.))
   
 
   
