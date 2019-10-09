@@ -22,5 +22,12 @@ departing <- aggregate(departing ~ month, data = nodes.info, sum)
 
 # c)
 # merge the joining and departing figures
-merge(joining, departing)
+glitch.players <- merge(joining, departing)
 
+# d)
+plot_ly(glitch.players, x = ~month, y=~departing, type='scatter', mode='line')%>% 
+  add_trace(y=~joining)
+%>%
+  add_trace()
+  
+  layout(yaxis = y, title = "Top 10 most reviewed beers by name", xaxis = x)
