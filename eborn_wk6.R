@@ -24,10 +24,24 @@ departing <- aggregate(departing ~ month, data = nodes.info, sum)
 # merge the joining and departing figures
 glitch.players <- merge(joining, departing)
 
+# create a list that contains the proper order for the dates
+months <- c('Nov-11', 'Dec-11', 'Jan-12', 'Feb-12', 'Mar-12', 'Apr-12', 'May-12',
+            'Jun-12', 'Jul-12', 'Aug-12', 'Sep-12', 'Oct-12', 'Nov-12', 'Dec-12')
+
+# reorder dataframe
+glitch.players <- glitch.players[match(months, glitch.players$month),]
+
+# Reset rownames from 1 to n
+rownames(glitch.players) <- 1:nrow(glitch.players)
+
+# reset the month factors to be in order
+glitch.players$month <- factor(months, levels = months)
+
+
 # d)
-plot_ly(glitch.players, x = ~month, y=~departing, type='scatter', mode='line')%>% 
-  add_trace(y=~joining)
-%>%
-  add_trace()
-  
-  layout(yaxis = y, title = "Top 10 most reviewed beers by name", xaxis = x)
+# Plot the joining and departing players
+y <- list(title = "Number of players")
+x <- list(title = 'Month')
+plot_ly(glitch.players, x = ~month, y=~departing, name = 'Departing', type='scatter', mode='line')%>% 
+  add_trace(y=~joining, name = 'Joining')%>%
+  layout(yaxis = y, title = "Glitch Players by Month", xaxis = x)
