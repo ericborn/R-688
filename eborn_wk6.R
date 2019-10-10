@@ -2,6 +2,7 @@ library(RJSONIO)
 library(dplyr)
 library(purrr)
 library(plotly)
+library(SportsAnalytics)
 
 # store the path to the file
 webpage <- 'C:/Users/TomBrody/Desktop/School/688 Web/wk6/12months_departures_joiners.json'
@@ -45,3 +46,18 @@ x <- list(title = 'Month')
 plot_ly(glitch.players, x = ~month, y=~departing, name = 'Departing', type='scatter', mode='line')%>% 
   add_trace(y=~joining, name = 'Joining')%>%
   layout(yaxis = y, title = "Glitch Players by Month", xaxis = x)
+
+# e)
+# subset of lowest departing player counts
+glitch.players.lowest <- glitch.players[4:10,]
+
+# plot of subset
+y <- list(title = "Number of players")
+x <- list(title = 'Month')
+plot_ly(glitch.players.lowest, x = ~month, y=~departing, name = 'Departing', type='scatter', mode='line')%>% 
+  layout(yaxis = y, title = "Departing Glitch Players by Month", xaxis = x)
+
+
+# 2)
+# 
+NBA.Stats <- fetch_NBAPlayerStatistics(season = "18-19", what = c("",".Home", ".Away"))
