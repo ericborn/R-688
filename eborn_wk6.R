@@ -59,5 +59,26 @@ plot_ly(glitch.players.lowest, x = ~month, y=~departing, name = 'Departing', typ
 
 
 # 2)
-# 
+# a)
+# pull down 2018-19 season stats
 NBA.Stats <- fetch_NBAPlayerStatistics(season = "18-19", what = c("",".Home", ".Away"))
+
+# b)
+# subset of only players who made greater than 300 shots
+fg <- NBA.Stats[NBA.Stats$FieldGoalsMade > 299,]
+
+# create new column of shot percentage
+fg$pct <- fg[,7]/fg[,8]
+
+# find the row equal to the max pct row
+# highest field goal percentage
+fg[fg$pct == max(fg$pct),]
+
+# c)
+# top 10 players in terms of total points
+
+sel.cols <- c('name','TotalPoints')
+
+head(NBA.Stats[order(NBA.Stats$TotalPoints, decreasing = TRUE),], n=10)
+
+
