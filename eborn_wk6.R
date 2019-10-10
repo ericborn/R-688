@@ -81,4 +81,56 @@ sel.cols <- c('name','TotalPoints')
 
 head(NBA.Stats[order(NBA.Stats$TotalPoints, decreasing = TRUE),], n=10)
 
+# d)
+# plot top 10 points per team
+top10.points <- head(aggregate(TotalPoints ~ Team, data = NBA.Stats, FUN=sum), n=10)
 
+y <- list(title = "Total Points")
+x <- list(title = 'Teams')
+plot_ly(top10.points, x = ~Team, y=~TotalPoints, name = 'Departing', type='bar')%>% 
+  layout(yaxis = y, title = "Total Points per Team", xaxis = x)
+
+# top 10 total minutes played
+top10.minutes <- head(aggregate(TotalMinutesPlayed ~ Team, data = NBA.Stats, FUN=sum), n=10)
+
+y <- list(title = "Total Minutes")
+x <- list(title = 'Teams')
+plot_ly(top10.minutes, x = ~Team, y=~TotalMinutesPlayed, name = 'Departing', type='bar')%>% 
+  layout(yaxis = y, title = "Total Points per Team", xaxis = x)
+
+# Box plot
+# BOXPLOT top 10 beer styles and their ABV's
+# Create dataset that contains the top 10 most reviewed ABV's and abv
+top.10.abv <- beer[beer$beer_style %in% beer.top10.style.avg$beer_style, c(4,6)]
+
+# Reset rownames from 1 to n
+rownames(top.10.abv) <- 1:nrow(top.10.abv)
+
+# drop empty factor levels
+top.10.abv <- droplevels(top.10.abv)
+
+### Lists are out of order, ABV diff being applied to the wrong items
+### numbers not needed
+# # Store min/max ABV's by style
+# top.10.abv.min <- aggregate(beer_abv ~ beer_style, top.10.abv, function(x) min(x))
+# top.10.abv.max <- aggregate(beer_abv ~ beer_style, top.10.abv, function(x) max(x))
+# 
+# # calculate difference between min and max abv by style
+# max.min.diff <- top.10.abv.max[2] - top.10.abv.min[2]
+# 
+# # Bind top 10 styles with min/max difference in ABV
+# style.top10 <- cbind(style.top10, max.min.diff)
+# 
+# # Rename column to abv_diff
+# colnames(style.top10)[colnames(style.top10)=="beer_abv"] <- "ABV_diff"
+
+
+# Create boxplot based on top 10 beer styles with ABV information
+y <- list(title = "Beer Style")
+x <- list(title = 'ABV')
+abv.box <- plot_ly(top.10.abv, x = ~beer_abv, y = ~beer_style, type = 'box',
+                   size = 2)%>% 
+  layout(xaxis = x, yaxis = y, title = "ABV distribution of top 10 beer styles")
+
+# Draw plot
+abv.box
