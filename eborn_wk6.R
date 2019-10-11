@@ -124,13 +124,15 @@ top.10.abv <- droplevels(top.10.abv)
 # # Rename column to abv_diff
 # colnames(style.top10)[colnames(style.top10)=="beer_abv"] <- "ABV_diff"
 
+teams <- c('ATL', 'BOS', 'BRO', 'CHA', 'CHI', 'CLE', 'DAL', 'DEN', 'DET', 'GSW')
+
+top10.full <- NBA.Stats[with(NBA.Stats,Team %in% teams),]
 
 # Create boxplot based on top 10 beer styles with ABV information
-y <- list(title = "Beer Style")
-x <- list(title = 'ABV')
-abv.box <- plot_ly(top.10.abv, x = ~beer_abv, y = ~beer_style, type = 'box',
-                   size = 2)%>% 
-  layout(xaxis = x, yaxis = y, title = "ABV distribution of top 10 beer styles")
+y <- list(title = "Total Points")
+x <- list(title = 'Team')
+plot_ly(top10.full, x = ~Team, y = ~TotalPoints, type = 'box', size = 2)%>% 
+  layout(xaxis = x, yaxis = y, title = "Point distribution of top 10 teams")
 
 # Draw plot
 abv.box
