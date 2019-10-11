@@ -72,67 +72,109 @@ fg$pct <- fg[,7]/fg[,8]
 
 # find the row equal to the max pct row
 # highest field goal percentage
-fg[fg$pct == max(fg$pct),]
+fg[fg$pct == max(fg$pct),c(2,7,8,26)]
 
 # c)
 # top 10 players in terms of total points
-
-sel.cols <- c('name','TotalPoints')
-
-head(NBA.Stats[order(NBA.Stats$TotalPoints, decreasing = TRUE),], n=10)
+head(NBA.Stats[order(NBA.Stats$TotalPoints, decreasing = TRUE),c(2,3,21)], n=10)
 
 # d)
+# 1)
 # plot top 10 points per team
-top10.points <- head(aggregate(TotalPoints ~ Team, data = NBA.Stats, FUN=sum), n=10)
+# gather total points per team
+top.points <- aggregate(TotalPoints ~ Team, data = NBA.Stats, FUN=sum)
+
+# only select top 10 teams by total points
+top10.points <- head(top.points[order(top.points$TotalPoints, decreasing = TRUE),], n=10)
+
+# Reset rownames from 1 to n
+rownames(top10.points) <- 1:nrow(top10.points)
+
+# drop empty factor levels
+top10.points <- droplevels(top10.points)
+
+# 19 removed since it was NA team with 20 points
+all.points <- aggregate(TotalPoints ~ Team, data = NBA.Stats, FUN=sum)[-19,]
+
+# average points across all teams
+avg.points <- mean(all.points$TotalPoints)
+
+# creates avg as a new column
+# I dont really like the way it looks vs an avg line
+#avg.points <- data.frame('Avg', mean(all.points$TotalPoints))
+#names(avg.points) <- c('Team', 'TotalPoints')
+#top10.points <- rbind(top10.points, avg.points)
 
 y <- list(title = "Total Points")
 x <- list(title = 'Teams')
-plot_ly(top10.points, x = ~Team, y=~TotalPoints, name = 'Departing', type='bar')%>% 
-  layout(yaxis = y, title = "Total Points per Team", xaxis = x)
+points.plot <- plot_ly(top10.points, x = ~Team, y=~TotalPoints, name = 'Total Points', type='bar')%>% 
+  add_trace(y =avg.points, name = 'League Avg Points', type = 'scatter', mode = 'lines')%>%
+  layout(yaxis = y, title = "Top 10 Total Points per Team", xaxis = x)
 
+# draw plot
+points.plot
+
+# 2)
 # top 10 total minutes played
-top10.minutes <- head(aggregate(TotalMinutesPlayed ~ Team, data = NBA.Stats, FUN=sum), n=10)
+top.minutes <- aggregate(TotalMinutesPlayed ~ Team, data = NBA.Stats, FUN=sum)
+
+# only select top 10 teams by total points
+top10.minutes <- head(top.minutes[order(top.minutes$TotalMinutesPlayed, decreasing = TRUE),], n=10)
+
+# Reset rownames from 1 to n
+rownames(top10.minutes) <- 1:nrow(top10.minutes)
+
+# drop empty factor levels
+top10.minutes <- droplevels(top10.minutes)
 
 y <- list(title = "Total Minutes")
 x <- list(title = 'Teams')
-plot_ly(top10.minutes, x = ~Team, y=~TotalMinutesPlayed, name = 'Departing', type='bar')%>% 
-  layout(yaxis = y, title = "Total Points per Team", xaxis = x)
+minutes.plot <- plot_ly(top10.minutes, x = ~Team, y=~TotalMinutesPlayed, type='bar')%>% 
+  layout(yaxis = y, title = "Total Minutes per Team", xaxis = x)
 
+# draw plot
+minutes.plot
+
+# 3)
 # Box plot
-# BOXPLOT top 10 beer styles and their ABV's
-# Create dataset that contains the top 10 most reviewed ABV's and abv
-top.10.abv <- beer[beer$beer_style %in% beer.top10.style.avg$beer_style, c(4,6)]
+# store just the top 10 scoring team names
+teams <- as.vector(top10.points$Team)
+
+# pull players team and total points from top 10
+top10.full <- NBA.Stats[with(NBA.Stats,Team %in% teams),c(3,21)]
 
 # Reset rownames from 1 to n
-rownames(top.10.abv) <- 1:nrow(top.10.abv)
+rownames(top10.full) <- 1:nrow(top10.full)
 
 # drop empty factor levels
-top.10.abv <- droplevels(top.10.abv)
-
-### Lists are out of order, ABV diff being applied to the wrong items
-### numbers not needed
-# # Store min/max ABV's by style
-# top.10.abv.min <- aggregate(beer_abv ~ beer_style, top.10.abv, function(x) min(x))
-# top.10.abv.max <- aggregate(beer_abv ~ beer_style, top.10.abv, function(x) max(x))
-# 
-# # calculate difference between min and max abv by style
-# max.min.diff <- top.10.abv.max[2] - top.10.abv.min[2]
-# 
-# # Bind top 10 styles with min/max difference in ABV
-# style.top10 <- cbind(style.top10, max.min.diff)
-# 
-# # Rename column to abv_diff
-# colnames(style.top10)[colnames(style.top10)=="beer_abv"] <- "ABV_diff"
-
-teams <- c('ATL', 'BOS', 'BRO', 'CHA', 'CHI', 'CLE', 'DAL', 'DEN', 'DET', 'GSW')
-
-top10.full <- NBA.Stats[with(NBA.Stats,Team %in% teams),]
+top10.full <- droplevels(top10.full)
 
 # Create boxplot based on top 10 beer styles with ABV information
 y <- list(title = "Total Points")
 x <- list(title = 'Team')
-plot_ly(top10.full, x = ~Team, y = ~TotalPoints, type = 'box', size = 2)%>% 
+top.box <- plot_ly(top10.full, x = ~Team, y = ~TotalPoints, type = 'box', size = 2)%>% 
   layout(xaxis = x, yaxis = y, title = "Point distribution of top 10 teams")
 
-# Draw plot
-abv.box
+# draw plot
+top.box
+
+# 4)
+# top 10 scorers
+# number of FieldGoalsMade, ThreesMade, FreeThrowsMade
+
+# players
+players <- head(NBA.Stats[order(NBA.Stats$TotalPoints, decreasing = TRUE),c(2)], n=10)
+
+# FieldGoalsMade, ThreesMade, FreeThrowsMade
+player.points <- NBA.Stats[NBA.Stats$Name %in% players, c(2,7,9,11)]
+
+# Create boxplot based on top 10 beer styles with ABV information
+y <- list(title = "Total Points")
+x <- list(title = 'Player')
+players.plot <- plot_ly(player.points, x = ~Name, y = ~FieldGoalsMade, type = 'bar', name = 'Field Goals')%>% 
+  add_trace(y = ~ThreesMade, name =  'Threes' )%>%
+  add_trace(y = ~FreeThrowsMade, name = 'Free Throws' )%>%
+  layout(xaxis = x, yaxis = y, title = "Point Distribution of the Top 10 Players", barmode = 'stack')
+
+# draw plot
+players.plot
