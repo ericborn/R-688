@@ -178,3 +178,28 @@ players.plot <- plot_ly(player.points, x = ~Name, y = ~FieldGoalsMade, type = 'b
 
 # draw plot
 players.plot
+
+# 5)
+# score breakdown per top 10 teams
+# players
+teams <- head(NBA.Stats[order(NBA.Stats$TotalPoints, decreasing = TRUE),c(3)], n=10)
+
+# FieldGoalsMade, ThreesMade, FreeThrowsMade
+team.points <- NBA.Stats[NBA.Stats$Team %in% teams, c(3,7,9,11)]
+
+# Reset rownames from 1 to n
+rownames(team.points) <- 1:nrow(team.points)
+
+# drop empty factor levels
+team.points <- droplevels(team.points)
+
+# Create boxplot based on top 10 beer styles with ABV information
+y <- list(title = "Total Points")
+x <- list(title = 'Team')
+team.point.plot <- plot_ly(team.points, x = ~Team, y = ~FieldGoalsMade, type = 'bar', name = 'Field Goals')%>% 
+  add_trace(y = ~ThreesMade, name =  'Threes' )%>%
+  add_trace(y = ~FreeThrowsMade, name = 'Free Throws' )%>%
+  layout(xaxis = x, yaxis = y, title = "Point Distribution of the Top 10 Teams", barmode = 'stack')
+
+# draw plot
+team.point.plot
