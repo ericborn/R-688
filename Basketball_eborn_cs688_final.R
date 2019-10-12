@@ -266,12 +266,14 @@ for (k in 2:21){
 # drop index 1
 champ.names <- champ.names[-1]
 
+# url for NBA team names and coordinates
 city.url <- 'https://en.wikipedia.org/wiki/National_Basketball_Association'
 
+# read html
 city.page <- read_html(city.url)
 
+# initalize empty list
 champ.city <- list()
-champ.coords <- c(0)
 
 # champ.city <- c(city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[4] %>% 
 #     html_nodes("td") %>% .[1] %>% html_text(),
@@ -279,6 +281,7 @@ champ.coords <- c(0)
 #   city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[4] %>% 
 #     html_nodes("td") %>% .[5] %>% html_nodes("span") %>% .[11] %>% html_text())
 
+# grabs team and coords from first table
 k = 4
 # 4-18
 for (i in 1:14){
@@ -292,6 +295,7 @@ for (i in 1:14){
 
 }  
 
+# grabs team and coords from second table
 j = 19
 # 19-34
 for (i in 15:29){
@@ -304,15 +308,30 @@ for (i in 15:29){
   j <- j + 1                         
 }
 
-champ.city[[1]]
-things <- strsplit(champ.city[[1]], "\n")
-
-
+# split strings on \n
 champ.split <- sapply(champ.city, function(x) strsplit(x, "\n"))
 
+# initalize empty lists
+names <- list()
+coords <- list()
 
-things[[1]][1]
+# creates separate lists from team names and coordinates
+for (i in 1:length(champ.split)){
+  names[i] <- champ.split[[i]][1]
+  coords[i] <- champ.split[[i]][2]
+}
 
+# replace semi colon with colon
+coords <- stri_replace_first_charclass(coords, "[;]", ":")
+
+# remove leading space and space after colon
+coords <- gsub(" ", "", coords)
+
+# flatten list of names
+names <- unlist(names)
+
+
+# static set of winners and coords
 # toronto      '43.643333:79.379167'
 # golden state '37.768056:122.3875'
 # cleveland    '41.496389:81.688056'
@@ -323,9 +342,9 @@ things[[1]][1]
 # boston       '42.366303:71.062228'
 # detroit      '42.696944:83.245556'
 
-coords <- c('43.643333:-79.379167', '37.768056:-122.3875', '41.496389:-81.688056',
-            '29.426944:-98.4375', '25.781389:-80.188056', '32.790556:-96.810278',
-            '34.043056:-118.267222', '42.366303:-71.062228', '42.696944:-83.245556')
+# coords <- c('43.643333:-79.379167', '37.768056:-122.3875', '41.496389:-81.688056',
+#             '29.426944:-98.4375', '25.781389:-80.188056', '32.790556:-96.810278',
+#             '34.043056:-118.267222', '42.366303:-71.062228', '42.696944:-83.245556')
 
 champ.names <- unique(champ.names)
 
