@@ -16,6 +16,8 @@ NBA.Stats <- fetch_NBAPlayerStatistics(season = "03-04", what = c("",".Home", ".
 # c)
 wolves <- NBA.Stats[NBA.Stats$Team == 'MIN',]
 
+# TODO
+# !!! cONVERT TO PLOT_LY TABLE
 # Highest Total Points
 wolves[wolves$TotalPoints == max(wolves$TotalPoints),c(2, 21)]
 
@@ -24,6 +26,7 @@ wolves[wolves$Blocks == max(wolves$Blocks),c(2, 18)]
 
 # Highest Rebounds
 wolves[wolves$TotalRebounds == max(wolves$TotalRebounds),c(2, 14)]
+
 
 # d)
 # top 5 teams for the 03-04 season
@@ -109,16 +112,19 @@ atlantic <- webpage %>% html_nodes("table") %>% .[6] %>% html_nodes("a") %>% htm
 central <- webpage %>% html_nodes("table") %>% .[7] %>% html_nodes("a") %>% html_text()
 teams <- c(midwest, pacific, atlantic, central)
 
-
-teams.df = data.frame(Team=teams, Conference=c(rep('Western',length(western)),
-                                              rep('Eastern',length(eastern))),
+# Create dataframe from win/loss data
+teams.df = data.frame(Team=teams, 
+                      Conference=c(rep('Western',length(western)),
+                                   rep('Eastern',length(eastern))),
                       Division=c(rep('Midwest', length(midwest)),
                                  rep('Pacific', length(pacific)),
                                  rep('Atlantic', length(atlantic)),
                                  rep('Central', length(central))),
-                                 Win=c(mid.wins, pac.wins, atl.wins, cen.wins),
-                                 Loss=c(mid.loss,pac.loss,atl.loss,cen.loss))
+                      Win=c(mid.wins, pac.wins, atl.wins, cen.wins),
+                      Loss=c(mid.loss,pac.loss,atl.loss,cen.loss))
 
+# TODO
+# CONVERT TO TABLE
 # output top 5 teams by total wins
 head(teams.df[order(teams.df$Win, decreasing = TRUE),], n=5)
 
@@ -161,7 +167,7 @@ wolves.points <- wolves[c(2,7,9,11)]
 
 # Create boxplot based on top 10 beer styles with ABV information
 y <- list(title = "Total Points")
-x <- list(title = 'Player')
+x <- list(title = 'Players')
 wolves.plot <- plot_ly(wolves.points, x = ~Name, y = ~FieldGoalsMade, type = 'bar', name = 'Field Goals')%>% 
   add_trace(y = ~ThreesMade, name =  'Threes' )%>%
   add_trace(y = ~FreeThrowsMade, name = 'Free Throws' )%>%
@@ -263,6 +269,27 @@ champ.names <- champ.names[-1]
 # strsplit(champ.names, " ")
 
 city.url <- 'https://en.wikipedia.org/wiki/National_Basketball_Association'
+
+city.page <- read_html(city.url)
+
+
+# 4-18
+for (k in 4:18){
+# team name
+  city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[k] %>% 
+    html_nodes("td") %>% .[1] %>% html_text()
+  # coords
+  city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[k] %>% 
+    html_nodes("td") %>% .[5] %>% html_nodes("span") %>% .[11] %>% html_text()
+}
+  
+# 19-34
+# team name
+city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[k] %>% 
+  html_nodes("td") %>% .[1] %>% html_text()
+# coords
+city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[k] %>% 
+  html_nodes("td") %>% .[5] %>% html_nodes("span") %>% .[11] %>% html_text()
 
 # toronto      '43.643333:79.379167'
 # golden state '37.768056:122.3875'
