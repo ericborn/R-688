@@ -26,7 +26,101 @@ wolves[wolves$TotalRebounds == max(wolves$TotalRebounds),c(2, 14)]
 
 # d)
 # top 5 teams for the 03-04 season
-'https://www.landofbasketball.com/yearbyyear/2003_2004_standings.htm'
+season.url <- 'https://www.landofbasketball.com/yearbyyear/2003_2004_standings.htm'
+
+# read the html
+webpage <- read_html(season.url)
+
+# create var to hold wins/losses for each conference
+mid.wins <- c(0)
+mid.loss <- c(0)
+pac.wins <- c(0)
+pac.loss <- c(0)
+atl.wins <- c(0)
+atl.loss <- c(0)
+cen.wins <- c(0)
+cen.loss <- c(0)
+
+# midwest div 7 teams
+# loop through the columns grabbing each win and loss
+for (k in 2:8){
+  mid.wins[[k]] <- webpage %>% html_nodes("table") %>% .[4] %>% 
+    html_nodes("tr") %>% .[k] %>% html_nodes("td") %>% .[3] %>% html_text()
+}
+
+for (k in 2:8){
+  mid.loss[[k]] <- webpage %>% html_nodes("table") %>% .[4] %>% 
+    html_nodes("tr") %>% .[k] %>% html_nodes("td") %>% .[4] %>% html_text()
+}
+
+# pac div 7 teams
+# loop through the columns grabbing each win and loss
+for (k in 2:8){
+  pac.wins[[k]] <- webpage %>% html_nodes("table") %>% .[5] %>% 
+    html_nodes("tr") %>% .[k] %>% html_nodes("td") %>% .[3] %>% html_text()
+}
+
+for (k in 2:8){
+  pac.loss[[k]] <- webpage %>% html_nodes("table") %>% .[5] %>% 
+    html_nodes("tr") %>% .[k] %>% html_nodes("td") %>% .[4] %>% html_text()
+}
+
+# atl div 7 teams
+# loop through the columns grabbing each win and loss
+for (k in 2:8){
+  atl.wins[[k]] <- webpage %>% html_nodes("table") %>% .[4] %>% 
+    html_nodes("tr") %>% .[k] %>% html_nodes("td") %>% .[3] %>% html_text()
+}
+
+for (k in 2:8){
+  atl.loss[[k]] <- webpage %>% html_nodes("table") %>% .[4] %>% 
+    html_nodes("tr") %>% .[k] %>% html_nodes("td") %>% .[4] %>% html_text()
+}
+
+# cen div 8 teams
+# loop through the columns grabbing each win and loss
+for (k in 2:9){
+  cen.wins[[k]] <- webpage %>% html_nodes("table") %>% .[5] %>% 
+    html_nodes("tr") %>% .[k] %>% html_nodes("td") %>% .[3] %>% html_text()
+}
+
+for (k in 2:9){
+  cen.loss[[k]] <- webpage %>% html_nodes("table") %>% .[5] %>% 
+    html_nodes("tr") %>% .[k] %>% html_nodes("td") %>% .[4] %>% html_text()
+}
+
+# drop the 1st index which is an NA
+mid.wins <- mid.wins[-1]
+mid.loss <- mid.loss[-1]
+pac.wins <- pac.wins[-1]
+pac.loss <- pac.loss[-1]
+atl.wins <- atl.wins[-1]
+atl.loss <- atl.loss[-1]
+cen.wins <- cen.wins[-1]
+cen.loss <- cen.loss[-1]
+
+# team names by division
+western <- webpage %>% html_nodes("table") %>% .[1] %>% html_nodes("a") %>% html_text()
+eastern <- webpage %>% html_nodes("table") %>% .[2] %>% html_nodes("a") %>% html_text()
+midwest <- webpage %>% html_nodes("table") %>% .[4] %>% html_nodes("a") %>% html_text()
+pacific <- webpage %>% html_nodes("table") %>% .[5] %>% html_nodes("a") %>% html_text()
+atlantic <- webpage %>% html_nodes("table") %>% .[6] %>% html_nodes("a") %>% html_text()
+central <- webpage %>% html_nodes("table") %>% .[7] %>% html_nodes("a") %>% html_text()
+teams <- c(Midwest, Pacific, Atlantic, Central)
+
+teams.df = data.frame(Team=teams, Conference=c(rep('Western',length(western)),
+                                              rep('Eastern',length(eastern))),
+                      Division=c(rep('Midwest', length(midwest)),
+                                 rep('Pacific', length(pacific)),
+                                 rep('Atlantic', length(atlantic)),
+                                 rep('Central', length(central))
+                                 ),Win=c(west.wins, ),Loss='')
+
+teams.df$Division = 1
+
+cbind(teams.df,Team=teams)
+
+teams.df[teams.df$Team %in% western,] = 1
 
 
 # b)
