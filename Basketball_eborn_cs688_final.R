@@ -266,6 +266,9 @@ for (k in 2:21){
 # drop index 1
 champ.names <- champ.names[-1]
 
+# Makes champion names unique
+champ.names <- unique(champ.names)
+
 # url for NBA team names and coordinates
 city.url <- 'https://en.wikipedia.org/wiki/National_Basketball_Association'
 
@@ -282,9 +285,9 @@ champ.city <- list()
 #     html_nodes("td") %>% .[5] %>% html_nodes("span") %>% .[11] %>% html_text())
 
 # grabs team and coords from first table
-k = 4
+k = 3
 # 4-18
-for (i in 1:14){
+for (i in 1:15){
                          # team name
   champ.city[i] <- paste(city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[k] %>% 
                          html_nodes("td") %>% .[1] %>% html_text(),
@@ -298,7 +301,7 @@ for (i in 1:14){
 # grabs team and coords from second table
 j = 19
 # 19-34
-for (i in 15:29){
+for (i in 16:30){
                          # team name
   champ.city[i] <- paste(city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[j] %>% 
                           html_nodes("td") %>% .[1] %>% html_text(),
@@ -330,7 +333,6 @@ coords <- gsub(" ", "", coords)
 # flatten list of names
 names <- unlist(names)
 
-
 # static set of winners and coords
 # toronto      '43.643333:79.379167'
 # golden state '37.768056:122.3875'
@@ -346,16 +348,22 @@ names <- unlist(names)
 #             '29.426944:-98.4375', '25.781389:-80.188056', '32.790556:-96.810278',
 #             '34.043056:-118.267222', '42.366303:-71.062228', '42.696944:-83.245556')
 
-champ.names <- unique(champ.names)
 
-map.df <- data.frame(LatLong = coords, Tip = champ.names)
+# all teams and their coordinates as separate columns in a df
+full.df <- data.frame(team = names, coords = coords)
 
+# creates a df for just the champion teams
+map.df <- data.frame(LatLong = full.df[full.df$team %in% champ.names,][2], 
+                     Tip = full.df[full.df$team %in% champ.names,][1])
+
+# setup map
 champMap <- gvisMap(map.df,
-                    locationvar = 'LatLong',
-                    tipvar = 'Tip',
+                    locationvar = 'coords',
+                    tipvar = 'team',
                     options=list(showTip=TRUE, 
                                   showLine=TRUE, 
                                   enableScrollWheel=TRUE,
                                   mapType='terrain', 
                                   useMapTypeControl=TRUE))
+# draw map
 plot(champMap)
