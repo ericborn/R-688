@@ -3,6 +3,7 @@ library('rvest')
 library('purrr')
 library('plotly')
 library('stringi')
+library('googleVis')
 library('SportsAnalytics')
 
 # a)
@@ -261,4 +262,32 @@ champ.names <- champ.names[-1]
 
 # strsplit(champ.names, " ")
 
-city.url 'https://en.wikipedia.org/wiki/National_Basketball_Association'``
+city.url <- 'https://en.wikipedia.org/wiki/National_Basketball_Association'
+
+# toronto      '43.643333:79.379167'
+# golden state '37.768056:122.3875'
+# cleveland    '41.496389:81.688056'
+# san antonio  '29.426944:98.4375'
+# miami        '25.781389:80.188056'
+# dallas       '32.790556:96.810278'
+# lakers       '34.043056:118.267222'
+# boston       '42.366303:71.062228'
+# detroit      '42.696944:83.245556'
+
+coords <- c('43.643333:-79.379167', '37.768056:-122.3875', '41.496389:-81.688056',
+            '29.426944:-98.4375', '25.781389:-80.188056', '32.790556:-96.810278',
+            '34.043056:-118.267222', '42.366303:-71.062228', '42.696944:-83.245556')
+
+champ.names <- unique(champ.names)
+
+map.df <- data.frame(LatLong = coords, Tip = champ.names)
+
+champMap <- gvisMap(map.df,
+                    locationvar = 'LatLong',
+                    tipvar = 'Tip',
+                    options=list(showTip=TRUE, 
+                                  showLine=TRUE, 
+                                  enableScrollWheel=TRUE,
+                                  mapType='terrain', 
+                                  useMapTypeControl=TRUE))
+plot(champMap)
