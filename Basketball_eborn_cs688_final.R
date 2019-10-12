@@ -266,30 +266,52 @@ for (k in 2:21){
 # drop index 1
 champ.names <- champ.names[-1]
 
-# strsplit(champ.names, " ")
-
 city.url <- 'https://en.wikipedia.org/wiki/National_Basketball_Association'
 
 city.page <- read_html(city.url)
 
+champ.city <- list()
+champ.coords <- c(0)
 
+# champ.city <- c(city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[4] %>% 
+#     html_nodes("td") %>% .[1] %>% html_text(),
+#   # coords
+#   city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[4] %>% 
+#     html_nodes("td") %>% .[5] %>% html_nodes("span") %>% .[11] %>% html_text())
+
+k = 4
 # 4-18
-for (k in 4:18){
-# team name
-  city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[k] %>% 
-    html_nodes("td") %>% .[1] %>% html_text()
-  # coords
-  city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[k] %>% 
-    html_nodes("td") %>% .[5] %>% html_nodes("span") %>% .[11] %>% html_text()
-}
-  
+for (i in 1:14){
+                         # team name
+  champ.city[i] <- paste(city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[k] %>% 
+                         html_nodes("td") %>% .[1] %>% html_text(),
+                         # coords
+                         city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[k] %>% 
+                         html_nodes("td") %>% .[5] %>% html_nodes("span") %>% .[11] %>% html_text())
+  k <- k + 1
+
+}  
+
+j = 19
 # 19-34
-# team name
-city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[k] %>% 
-  html_nodes("td") %>% .[1] %>% html_text()
-# coords
-city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[k] %>% 
-  html_nodes("td") %>% .[5] %>% html_nodes("span") %>% .[11] %>% html_text()
+for (i in 15:29){
+                         # team name
+  champ.city[i] <- paste(city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[j] %>% 
+                          html_nodes("td") %>% .[1] %>% html_text(),
+                         # coords
+                         city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[j] %>% 
+                          html_nodes("td") %>% .[5] %>% html_nodes("span") %>% .[11] %>% html_text())
+  j <- j + 1                         
+}
+
+champ.city[[1]]
+things <- strsplit(champ.city[[1]], "\n")
+
+
+champ.split <- sapply(champ.city, function(x) strsplit(x, "\n"))
+
+
+things[[1]][1]
 
 # toronto      '43.643333:79.379167'
 # golden state '37.768056:122.3875'
