@@ -16,16 +16,55 @@ NBA.Stats <- fetch_NBAPlayerStatistics(season = "03-04", what = c("",".Home", ".
 # c)
 wolves <- NBA.Stats[NBA.Stats$Team == 'MIN',]
 
-# TODO
-# !!! cONVERT TO PLOT_LY TABLE
 # Highest Total Points
-wolves[wolves$TotalPoints == max(wolves$TotalPoints),c(2, 21)]
+points <- wolves[wolves$TotalPoints == max(wolves$TotalPoints),c(2, 21)]
 
 # Highest Blocks
-wolves[wolves$Blocks == max(wolves$Blocks),c(2, 18)]
+blocks <- wolves[wolves$Blocks == max(wolves$Blocks),c(2, 18)]
 
 # Highest Rebounds
-wolves[wolves$TotalRebounds == max(wolves$TotalRebounds),c(2, 14)]
+rebounds <- wolves[wolves$TotalRebounds == max(wolves$TotalRebounds),c(2, 14)]
+rebounds[1]
+
+
+basic.stats <- data.frame("Player" = c(points[[1]], blocks[[1]], rebounds[[1]]),
+                          "Stat" = c('Highest Points', 'Highest Rebounds', 'Highest Blocks'),
+                          'Total' = c(points[[2]], rebounds[[2]], blocks[[2]]))
+
+# reset factors to order by player column
+basic.stats$Player <- factor(basic.stats$Player, 
+                              levels = c(as.character(basic.stats$Player)))
+
+# Convert factors to character
+basic.stats$Player <- as.character(basic.stats$Player)
+
+# reset factors to order by stat column
+basic.stats$Stat <- factor(basic.stats$Stat, 
+                             levels = c(as.character(basic.stats$Stat)))
+
+# Convert factors to character
+basic.stats$Stat <- as.character(basic.stats$Stat)
+
+
+# create table for top 10 abv's, total reviews and average review score
+stat.table <- plot_ly(
+  type = 'table',
+  height = 250,
+  width = 700,
+  header = list(
+    values = c('Player', 'Stat', 'Total'),
+    line = list(width = 1, color = 'black'),
+    fill = list(color = c('#1f77b4', '#1f77b4')),
+    font = list(famile = 'Arial', size = 14, color = 'white')
+  ),
+  cells = list(
+    values = rbind(basic.stats$Player, basic.stats$Stat, basic.stats$Total),
+    align = c('center'),
+    line = list(width = 1, color = 'black')
+  ))
+# Output table
+
+stat.table
 
 
 # d)
