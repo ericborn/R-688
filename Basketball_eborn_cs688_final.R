@@ -24,7 +24,7 @@ NBA.Stats$threepts <- NBA.Stats$ThreesMade * 3
 #NBA.Stats$relTotal <- NBA.Stats$FGpoints + NBA.Stats$threepoints + NBA.Stats$FreeThrowsMade
 
 # output stats
-head(NBA.Stats)
+# head(NBA.Stats)
 
 # Total unique teams, players, max minutes, total points, total rebounds, total blocks
 full.stats <- data.frame('Measure' = c('Unique teams', 'Unique players', 'Average minutes', 
@@ -310,13 +310,14 @@ team.twopt <- aggregate(twopts ~ Team, data = NBA.Stats, FUN=sum)
 team.threepts <- aggregate(threepts ~ Team, data = NBA.Stats, FUN=sum)
 team.total <- aggregate(TotalPoints ~ Team, data = NBA.Stats, FUN=sum)
 
+# turn point totals into a dataframe
 all.points <- data.frame(Team=team.ft[1],
                          ft=team.ft[2],
                          twopt=team.twopt[2],
                          threepts=team.threepts[2],
                          total=team.total[2])
 
-
+# reorder by total points
 attach(all.points)
 all.points <- all.points[order(-TotalPoints),]
 detach(all.points)
@@ -337,24 +338,8 @@ all.points$Team <- factor(all.points$Team,
 # plot top 10 points per team
 # gather total points per team
 
-#top.points <- aggregate(TotalPoints ~ Team, data = NBA.Stats, FUN=sum)
-
-# attach(top.points)
-# top.points <- top.points[order(-TotalPoints),]
-# detach(top.points)
-
 # only select top 10 teams by total points
-top10.points <- all.points[1:10,c(1,2)]
-
-# # Reset rownames from 1 to n
-# rownames(top10.points) <- 1:nrow(top10.points)
-# 
-# # drop empty factor levels
-# top10.points <- droplevels(top10.points)
-# 
-# # reset factors to order by frequency decending
-# top10.points$Team <- factor(top10.points$Team, 
-#                                levels = c(as.character(top10.points$Team)))
+top10.points <- all.points[1:10,c(1,5)]
 
 # average points across all teams
 avg.points <- round(mean(all.points$TotalPoints))
@@ -451,12 +436,6 @@ players.plot
 
 # 5)
 # score breakdown per top 10 teams
-
-#teams <- head(NBA.Stats[order(NBA.Stats$TotalPoints, decreasing = TRUE),c(3)], n=10)
-
-# twopts, threepts, FreeThrowsMade
-#team.points <- NBA.Stats[NBA.Stats$Team %in% teams, c(3,27,28,11,21)]
-
 # Limit to top 10
 team.points <- all.points[1:10,]
 
@@ -483,7 +462,6 @@ team.point.plot
 
 # f)
 # champ names
-
 champ.url <- 'https://www.landofbasketball.com/championships/year_by_year.htm'
 
 # read the html
@@ -512,12 +490,6 @@ city.page <- read_html(city.url)
 
 # initalize empty list
 champ.city <- list()
-
-# champ.city <- c(city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[4] %>% 
-#     html_nodes("td") %>% .[1] %>% html_text(),
-#   # coords
-#   city.page %>% html_nodes("table") %>% .[3] %>% html_nodes("tr") %>% .[4] %>% 
-#     html_nodes("td") %>% .[5] %>% html_nodes("span") %>% .[11] %>% html_text())
 
 # grabs team and coords from first table
 k = 3
