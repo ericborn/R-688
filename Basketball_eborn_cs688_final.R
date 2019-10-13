@@ -13,13 +13,21 @@ library('SportsAnalytics')
 # pull down 2003-04 season stats
 NBA.Stats <- fetch_NBAPlayerStatistics(season = "03-04", what = c("",".Home", ".Away"))
 
+# clean-up 3 rows. Team GOL should be CLE, NO should be LAL
+NBA.Stats[NBA.Stats$Team == 'GOL',]$Team <- 'CLE'
+NBA.Stats[NBA.Stats$Team == 'NO',]$Team <- 'LAL'
+
+# add new column which is the total points from field goals
+NBA.Stats$FGpoints <- NBA.Stats$FieldGoalsMade * 2
+NBA.Stats$threepoints <- NBA.Stats$ThreesMade * 3
+
 # output stats
 head(NBA.Stats)
 
 # Total unique teams, players, max minutes, total points, total rebounds, total blocks
 # points
-full.stats <- data.frame('Measure' = c('Total unique teams', 'players', 'max minutes', 
-                                       'total points', 'total rebounds', 'total blocks'),
+full.stats <- data.frame('Measure' = c('Unique teams', 'Unique players', 'Average minutes', 
+                                       'Points', 'Rebounds', 'Blocks'),
                          'Total' = c(length(unique(NBA.Stats$Team)),
                                      length(unique(NBA.Stats$Name)),
                                      round(mean(NBA.Stats$TotalMinutesPlayed)),
@@ -27,22 +35,57 @@ full.stats <- data.frame('Measure' = c('Total unique teams', 'players', 'max min
                                      sum(NBA.Stats$TotalRebounds),
                                      sum(NBA.Stats$Blocks)))
 
+# reset factors to order by Measure column
+full.stats$Measure <- factor(full.stats$Measure, 
+                              levels = c(as.character(full.stats$Measure)))
+
+# Convert factors to character
+full.stats$Measure <- as.character(full.stats$Measure)
+
+# create table for top 10 abv's, total reviews and average review score
+nba.stat.table <- plot_ly(
+  type = 'table',
+  height = 250,
+  width = 500,
+  header = list(
+    values = c('Measure', 'Total'),
+    line = list(width = 1, color = 'black'),
+    fill = list(color = c('#1f77b4', '#1f77b4')),
+    font = list(famile = 'Arial', size = 14, color = 'white')
+  ),
+  cells = list(
+    values = rbind(full.stats$Measure, full.stats$Total),
+    align = c('center'),
+    line = list(width = 1, color = 'black')
+  ))
+
+# Output table
+nba.stat.table
+
 # c)
 wolves <- NBA.Stats[NBA.Stats$Team == 'MIN',]
 
 # Highest Total Points
-points <- wolves[wolves$TotalPoints == max(wolves$TotalPoints),c(2, 21)]
+points <- head(wolves[order(wolves$TotalPoints, decreasing = TRUE),c(2,21)], n=3)
 
 # Highest Blocks
-blocks <- wolves[wolves$Blocks == max(wolves$Blocks),c(2, 18)]
+blocks <- head(wolves[order(wolves$Blocks, decreasing = TRUE),c(2,18)], n=3)
 
 # Highest Rebounds
-rebounds <- wolves[wolves$TotalRebounds == max(wolves$TotalRebounds),c(2, 14)]
+rebounds <- head(wolves[order(wolves$TotalRebounds, decreasing = TRUE),c(2,14)], n=3)
+
+points[[1]][1]
 
 # create df for basic stats
-basic.stats <- data.frame("Player" = c(points[[1]], blocks[[1]], rebounds[[1]]),
-                          "Stat" = c('Highest Points', 'Highest Rebounds', 'Highest Blocks'),
-                          'Total' = c(points[[2]], rebounds[[2]], blocks[[2]]))
+basic.stats <- data.frame("Player" = c(points[[1]][1], points[[1]][2], points[[1]][3],
+                                       rebounds[[1]][1], rebounds[[1]][2], rebounds[[1]][3],
+                                       blocks[[1]][1], blocks[[1]][2], blocks[[1]][3]),
+                          "Stat" = c('Points', 'Points', 'Points',
+                                     'Rebounds', 'Rebounds', 'Rebounds',
+                                     'Blocks','Blocks','Blocks'),
+                          'Total' = c(points[[2]][1], points[[2]][2], points[[2]][3],
+                                      rebounds[[2]][1], rebounds[[2]][2], rebounds[[2]][3],
+                                      blocks[[2]][1], blocks[[2]][2], blocks[[2]][3]))
 
 # reset factors to order by player column
 basic.stats$Player <- factor(basic.stats$Player, 
@@ -62,7 +105,7 @@ basic.stats$Stat <- as.character(basic.stats$Stat)
 # create table for top 10 abv's, total reviews and average review score
 stat.table <- plot_ly(
   type = 'table',
-  height = 250,
+  height = 400,
   width = 700,
   header = list(
     values = c('Player', 'Stat', 'Total'),
@@ -340,7 +383,10 @@ top.box
 players <- head(NBA.Stats[order(NBA.Stats$TotalPoints, decreasing = TRUE),c(2)], n=10)
 
 # FieldGoalsMade, ThreesMade, FreeThrowsMade
-player.points <- NBA.Stats[NBA.Stats$Name %in% players, c(2,7,9,11)]
+player.points <- NBA.Stats[NBA.Stats$Name %in% players, c(2,7,9,11,21)]
+
+
+player.points <- player.points[order(player.points$TotalPoints, decreasing = TRUE),c(1:4)]
 
 # Create boxplot based on top 10 beer styles with ABV information
 y <- list(title = "Total Points")

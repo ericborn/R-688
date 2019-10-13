@@ -25,22 +25,74 @@ library('SportsAnalytics')
 # pull down 2003-04 season stats
 NBA.Stats <- fetch_NBAPlayerStatistics(season = "03-04", what = c("",".Home", ".Away"))
 
-# c)
+# clean-up 3 rows. Team GOL should be CLE, NO should be LAL
+NBA.Stats[NBA.Stats$Team == 'GOL',]$Team <- 'CLE'
+NBA.Stats[NBA.Stats$Team == 'NO',]$Team <- 'LAL'
+
+# add new column which is the total points from field goals
+NBA.Stats$FGpoints <- NBA.Stats$FieldGoalsMade * 2
+
+# output stats
+head(NBA.Stats)
+
+# Total unique teams, players, max minutes, total points, total rebounds, total blocks
+# points
+full.stats <- data.frame('Measure' = c('Unique teams', 'Unique players', 'Average minutes', 
+                                       'Points', 'Rebounds', 'Blocks'),
+                         'Total' = c(length(unique(NBA.Stats$Team)),
+                                     length(unique(NBA.Stats$Name)),
+                                     round(mean(NBA.Stats$TotalMinutesPlayed)),
+                                     sum(NBA.Stats$TotalPoints),
+                                     sum(NBA.Stats$TotalRebounds),
+                                     sum(NBA.Stats$Blocks)))
+
+# reset factors to order by Measure column
+full.stats$Measure <- factor(full.stats$Measure, 
+                              levels = c(as.character(full.stats$Measure)))
+
+# Convert factors to character
+full.stats$Measure <- as.character(full.stats$Measure)
+
+# create table for top 10 abv's, total reviews and average review score
+nba.stat.table <- plot_ly(
+  type = 'table',
+  height = 250,
+  width = 500,
+  header = list(
+    values = c('Measure', 'Total'),
+    line = list(width = 1, color = 'black'),
+    fill = list(color = c('#1f77b4', '#1f77b4')),
+    font = list(famile = 'Arial', size = 14, color = 'white')
+  ),
+  cells = list(
+    values = rbind(full.stats$Measure, full.stats$Total),
+    align = c('center'),
+    line = list(width = 1, color = 'black')
+  ))
+
 wolves <- NBA.Stats[NBA.Stats$Team == 'MIN',]
 
 # Highest Total Points
-points <- wolves[wolves$TotalPoints == max(wolves$TotalPoints),c(2, 21)]
+points <- head(wolves[order(wolves$TotalPoints, decreasing = TRUE),c(2,21)], n=3)
 
 # Highest Blocks
-blocks <- wolves[wolves$Blocks == max(wolves$Blocks),c(2, 18)]
+blocks <- head(wolves[order(wolves$Blocks, decreasing = TRUE),c(2,18)], n=3)
 
 # Highest Rebounds
-rebounds <- wolves[wolves$TotalRebounds == max(wolves$TotalRebounds),c(2, 14)]
+rebounds <- head(wolves[order(wolves$TotalRebounds, decreasing = TRUE),c(2,14)], n=3)
+
+points[[1]][1]
 
 # create df for basic stats
-basic.stats <- data.frame("Player" = c(points[[1]], blocks[[1]], rebounds[[1]]),
-                          "Stat" = c('Highest Points', 'Highest Rebounds', 'Highest Blocks'),
-                          'Total' = c(points[[2]], rebounds[[2]], blocks[[2]]))
+basic.stats <- data.frame("Player" = c(points[[1]][1], points[[1]][2], points[[1]][3],
+                                       rebounds[[1]][1], rebounds[[1]][2], rebounds[[1]][3],
+                                       blocks[[1]][1], blocks[[1]][2], blocks[[1]][3]),
+                          "Stat" = c('Points', 'Points', 'Points',
+                                     'Rebounds', 'Rebounds', 'Rebounds',
+                                     'Blocks','Blocks','Blocks'),
+                          'Total' = c(points[[2]][1], points[[2]][2], points[[2]][3],
+                                      rebounds[[2]][1], rebounds[[2]][2], rebounds[[2]][3],
+                                      blocks[[2]][1], blocks[[2]][2], blocks[[2]][3]))
 
 # reset factors to order by player column
 basic.stats$Player <- factor(basic.stats$Player, 
@@ -60,7 +112,7 @@ basic.stats$Stat <- as.character(basic.stats$Stat)
 # create table for top 10 abv's, total reviews and average review score
 stat.table <- plot_ly(
   type = 'table',
-  height = 250,
+  height = 400,
   width = 700,
   header = list(
     values = c('Player', 'Stat', 'Total'),
@@ -74,11 +126,7 @@ stat.table <- plot_ly(
     line = list(width = 1, color = 'black')
   ))
 
-# Output table
-stat.table
-
-
-# d)
+####### d)
 # top 5 teams for the 03-04 season
 season.url <- 'https://www.landofbasketball.com/yearbyyear/2003_2004_standings.htm'
 
@@ -500,39 +548,36 @@ plot(champMap)
 
 
 ```
-### a) Select a league and a season
-I chose to collect and analyse data from the 2003-2004 season of the NBA.
+### League, Season and Data
+I chose to collect and analyze data from the 2003-2004 season of the NBA. The data was downloaded with the R SportsAnalytics package, which sources the data from http://www.dougstats.com. This data includes the players name, team, position, number of games played, total minutes played and 19 other columns pertaining to their performance throughout the season.
 
+### Clean up
+Prior to performing any analysis, I chose to review the dataset to look for dirty data and to generate a quick summary of a few stats. I did find and correct three players who had a typo in their team name and also found that the way that the total points column is calculated is a bit odd. 
 
+Total points is calculated as follows: The number of field goals multiplied by 2, which makes sense since it's a shot worth 2 points, added with the number of three-pointers, which are counted as 1 each for some reason, then added with freethrows, which are also counted individually as they are worth one point in the game. This seems to be the same calculation followed on multiple websites online and leads me to believe its not just an issue with the dataset I'm using, but the way the NBA calculates it. I decided to add two new columns which represent the total number of points scored for a field goal and a three pointer to be used whenever total points are calculated. Outside of these two discrepancies, I didn't notice any other stats that seemed off. 
+
+### At a glance
+In the 2003-2004 season there were 29 unique teams and 442 unique players. The average number of minutes played throughout the season was 1300. The total points scored was over 222k, rebounds over 100k and 12k blocked shots.
 
 ```{r echo = FALSE}
 # quick view at the full stats table
-head(NBA.Stats)
+nba.stat.table
 ```
 
-### Dataset Summary
-This dataset consists of 1.5M beer reviews from the website Beeradvocate.com. The set includes various pieces of information about the beer and the reviewers impressions of the taste. I chose to focus my analysis on the ABV, beer name, beer style and the overall impression categories.
-
-Source - https://data.world/socialmediadata/beeradvocate
-
-### At a glance
-Prior to performing any analysis I chose to do some cleaning of the dataset. I noticed there were a large number of beers with only 1 review. I took these as being reviewed erroneously due to a spelling error in the beers name or some other mistake by the user. Prior to removing these from the dataset there was a total of ~57K unique beers with an average of 28 reviews per beer. After removing all beers with a single review the total distinct beers sits at ~38K with an average of 41 reviews per beer. The average ABV across the dataset is 7.1 and the max is 43, that's one seriously strong beer!
+### Timberwolves
+For an individual team I decided to analyze the Timberwolves, as they had one of the best records and top overall players during the 2003-2004 season. When looking at the top three players for total points, rebounds and blocks, you can see that Kevin Garnet was was best on the team for all three. Latrell Sprewell was also a star player for the team, with the third highest points and second highest rebounds, but trailed Garnet in this category by over 800!
 
 ```{r echo = FALSE}
-# Basic stats table
+# Timberwolves top three table
 stat.table
 ```
+When we size up the top 10 point scorers for the season we see an interesting distribution. Kevin Garnett who we looked at before 
 
-### Top 10 by ABV
-Since I just spoke about ABV's, lets dive a little deeper into that category of the data. The following is a table displaying the 10 top ABV's determined by the total number of beers reviewed with that ABV.
 
-Clocking in almost twice as many reviews as number two are beers with an ABV of 5%. Some of the most notable beers in this category are Budweiser, Stella Artois, Heineken and Miller Highlife. These beers are all highly available in many stores and bars, so it's no wonder they have so many reviews! 
 
-While 5% may be the most reviewed, it's actually the worst in terms of average rating with a score of 3.64. The highest average rating is 9% ABV with a score of 3.96, followed by 7.5% at 3.94, then a three way tie between 7%, 8% and 10% at 3.93.
-
-Another interesting tidbit is that these top 10 ABV's make up 38.3% of the total dataset!
 ```{r}
-paste(round(sum(abv.top10) / nrow(beer) * 100, digits = 1), "%", sep = '')
+# draw plot
+players.plot
 ```
 
 ```{r echo = FALSE}
