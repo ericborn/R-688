@@ -302,34 +302,59 @@ top.record.table <- plot_ly(
 # Output table
 top.record.table
 
+####
+# store team point totals for each category
+# used in multiple plots further down
+team.ft <- aggregate(FreeThrowsMade ~ Team, data = NBA.Stats, FUN=sum)
+team.twopt <- aggregate(twopts ~ Team, data = NBA.Stats, FUN=sum)
+team.threepts <- aggregate(threepts ~ Team, data = NBA.Stats, FUN=sum)
+team.total <- aggregate(TotalPoints ~ Team, data = NBA.Stats, FUN=sum)
+
+all.points <- data.frame(Team=team.ft[1],
+                         ft=team.ft[2],
+                         twopt=team.twopt[2],
+                         threepts=team.threepts[2],
+                         total=team.total[2])
+
+
+attach(all.points)
+all.points <- all.points[order(-TotalPoints),]
+detach(all.points)
+
+# Reset rownames from 1 to n
+rownames(all.points) <- 1:nrow(all.points)
+
+# drop empty factor levels
+all.points <- droplevels(all.points)
+
+# reset factors to order by frequency decending
+all.points$Team <- factor(all.points$Team, 
+                            levels = c(as.character(all.points$Team)))
+####
+
 ######## e)
 # 1)
 # plot top 10 points per team
 # gather total points per team
-top.points <- aggregate(TotalPoints ~ Team, data = NBA.Stats, FUN=sum)
 
-attach(top.points)
-top.points <- top.points[order(-TotalPoints),]
-detach(top.points)
+#top.points <- aggregate(TotalPoints ~ Team, data = NBA.Stats, FUN=sum)
+
+# attach(top.points)
+# top.points <- top.points[order(-TotalPoints),]
+# detach(top.points)
 
 # only select top 10 teams by total points
-top10.points <- top.points[1:10,]
+top10.points <- all.points[1:10,c(1,2)]
 
-# Reset rownames from 1 to n
-rownames(top10.points) <- 1:nrow(top10.points)
-
-# drop empty factor levels
-top10.points <- droplevels(top10.points)
-
-# reset factors to order by frequency decending
-top10.points$Team <- factor(top10.points$Team , 
-                               levels = c(as.character(top10.points$Team )))
-
-
-
-# 19 was an issue due to team being NA
-# seems fixed due to player cleanup at start
-all.points <- aggregate(TotalPoints ~ Team, data = NBA.Stats, FUN=sum) #[-19,]
+# # Reset rownames from 1 to n
+# rownames(top10.points) <- 1:nrow(top10.points)
+# 
+# # drop empty factor levels
+# top10.points <- droplevels(top10.points)
+# 
+# # reset factors to order by frequency decending
+# top10.points$Team <- factor(top10.points$Team, 
+#                                levels = c(as.character(top10.points$Team)))
 
 # average points across all teams
 avg.points <- round(mean(all.points$TotalPoints))
@@ -377,7 +402,7 @@ rownames(top10.full) <- 1:nrow(top10.full)
 # drop empty factor levels
 top10.full <- droplevels(top10.full)
 
-# Create boxplot based on top 10 beer styles with ABV information
+# Create boxplot based on top 10 highest scoring teams
 y <- list(title = "Total Points")
 x <- list(title = 'Team')
 top.box <- plot_ly(top10.full, x = ~Team, y = ~TotalPoints, type = 'box', size = 2,
@@ -426,16 +451,14 @@ players.plot
 
 # 5)
 # score breakdown per top 10 teams
-# players
-teams <- head(NBA.Stats[order(NBA.Stats$TotalPoints, decreasing = TRUE),c(3)], n=10)
+
+#teams <- head(NBA.Stats[order(NBA.Stats$TotalPoints, decreasing = TRUE),c(3)], n=10)
 
 # twopts, threepts, FreeThrowsMade
-team.points <- NBA.Stats[NBA.Stats$Team %in% teams, c(3,27,28,11,21)]
+#team.points <- NBA.Stats[NBA.Stats$Team %in% teams, c(3,27,28,11,21)]
 
-
-attach(team.points)
-team.points <- team.points[order(-TotalPoints),]
-detach(team.points)
+# Limit to top 10
+team.points <- all.points[1:10,]
 
 # Reset rownames from 1 to n
 rownames(team.points) <- 1:nrow(team.points)
@@ -444,16 +467,15 @@ rownames(team.points) <- 1:nrow(team.points)
 team.points <- droplevels(team.points)
 
 # reset factors to order by frequency decending
-player.points$Team <- factor(player.points$Team , 
-                             levels = c(as.character(player.points$Team)))
-
+team.points$Team <- factor(team.points$Team , 
+                             levels = c(as.character(team.points$Team)))
 
 # Create bar plot for point distribution across top 10 teams
 y <- list(title = "Total Points")
 x <- list(title = 'Team')
 team.point.plot <- plot_ly(team.points, x = ~Team, y = ~twopts, type = 'bar', name = 'Field Goals')%>% 
-  add_trace(y = ~threepts, name =  'Threes' )%>%
-  add_trace(y = ~FreeThrowsMade, name = 'Free Throws' )%>%
+  add_trace(y = ~threepts, name =  'Threes' ) %>%
+  add_trace(y = ~FreeThrowsMade, name = 'Free Throws' ) %>%
   layout(xaxis = x, yaxis = y, title = "Point Distribution of the Top 10 Teams", barmode = 'stack')
 
 # draw plot
