@@ -368,7 +368,7 @@ x <- list(title = 'Players')
 wolves.plot <- plot_ly(wolves.points, x = ~Name, y = ~twopts, type = 'bar', name = 'Field Goals')%>% 
   add_trace(y = ~threepts, name =  'Threes' )%>%
   add_trace(y = ~FreeThrowsMade, name = 'Free Throws' )%>%
-  layout(xaxis = x, yaxis = y, title = "Point Distribution of the Timber Wolves", barmode = 'stack')
+  layout(xaxis = x, yaxis = y, title = "Point Distribution of the Timberwolves", barmode = 'stack')
 
 # draw plot
 wolves.plot
@@ -386,6 +386,11 @@ rownames(top10.full) <- 1:nrow(top10.full)
 
 # drop empty factor levels
 top10.full <- droplevels(top10.full)
+
+NBA.Stats[NBA.Stats$TotalPoints == 1557,c(2, 21)]
+NBA.Stats[NBA.Stats$TotalPoints == 1439,c(2, 21)]
+NBA.Stats[NBA.Stats$TotalPoints == 1776,c(2, 21)]
+NBA.Stats[NBA.Stats$TotalPoints == 1964,c(2, 21)]
 
 # Create boxplot based on top 10 highest scoring teams
 y <- list(title = "Total Points")
@@ -421,7 +426,6 @@ player.points <- droplevels(player.points)
 # reset factors to order by frequency decending
 player.points$Name <- factor(player.points$Name , 
                             levels = c(as.character(player.points$Name)))
-
 
 # Create bar chart for top 10 scorers in the season
 y <- list(title = "Total Points")

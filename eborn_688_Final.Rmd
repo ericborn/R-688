@@ -3,7 +3,7 @@ title: "2003-2004 NBA Analysis"
 author: Eric Born - CS688 Final Project
 output: html_document
 ---
-```{r include = FALSE}
+```{r include = FALSE, warning = FALSE, error = TRUE}
 #############
 # Start setup
 #############
@@ -360,10 +360,11 @@ wolves.points <- wolves[c(2,27,28,11)]
 # Create plot for all wolves players by types of points made
 y <- list(title = "Total Points")
 x <- list(title = 'Players')
-wolves.plot <- plot_ly(wolves.points, x = ~Name, y = ~twopts, type = 'bar', name = 'Field Goals')%>% 
+wolves.plot <- plot_ly(wolves.points, x = ~Name, y = ~twopts,
+                       type = 'bar', name = 'Two pointers')%>% 
   add_trace(y = ~threepts, name =  'Threes' )%>%
   add_trace(y = ~FreeThrowsMade, name = 'Free Throws' )%>%
-  layout(xaxis = x, yaxis = y, title = "Point Distribution of the Timber Wolves", barmode = 'stack')
+  layout(xaxis = x, yaxis = y, title = "Point Distribution of the Timberwolves", barmode = 'stack')
 
 # 3)
 # Box plot
@@ -438,7 +439,8 @@ team.points$Team <- factor(team.points$Team ,
 # Create bar plot for point distribution across top 10 teams
 y <- list(title = "Total Points")
 x <- list(title = 'Team')
-team.point.plot <- plot_ly(team.points, x = ~Team, y = ~twopts, type = 'bar', name = 'Field Goals')%>% 
+team.point.plot <- plot_ly(team.points, x = ~Team, y = ~twopts,
+                           type = 'bar', name = 'Two pointers') %>% 
   add_trace(y = ~threepts, name =  'Threes' ) %>%
   add_trace(y = ~FreeThrowsMade, name = 'Free Throws' ) %>%
   layout(xaxis = x, yaxis = y, title = "Point Distribution of the Top 10 Teams", barmode = 'stack')
@@ -560,12 +562,10 @@ champMap <- gvisMap(map.df,
 I chose to collect and analyze data from the 2003-2004 season of the NBA. The data was downloaded with the R SportsAnalytics package, which sources the data from http://www.dougstats.com. This data includes the players name, team, position, number of games played, total minutes played and 19 other columns pertaining to their performance throughout the season.
 
 ### Clean up
-Prior to performing any analysis, I chose to review the dataset to look for dirty data and to generate a quick summary of a few stats. I did find and correct three players who had a typo in their team name and also found that the way that the total points column is calculated is a bit odd. 
-
-Total points is calculated as follows: The number of field goals multiplied by 2, which makes sense since it's a shot worth 2 points, added with the number of three-pointers, which are counted as 1 each for some reason, then added with freethrows, which are also counted individually as they are worth one point in the game. This seems to be the same calculation followed on multiple websites online and leads me to believe its not just an issue with the dataset I'm using, but the way the NBA calculates it. I decided to add two new columns which represent the total number of points scored for a field goal and a three pointer to be used whenever total points are calculated. Outside of these two discrepancies, I didn't notice any other stats that seemed off. 
+Prior to performing any analysis, I chose to review the dataset to look for dirty data and to generate a quick summary of a few stats. I did find and correct three players who had a typo in their team name and also decided to add three calculated columns, the total number of two point field goals, the points from those goals and the total points from three point shots.
 
 ### At a glance
-In the 2003-2004 season there were 29 unique teams and 442 unique players. The average number of minutes a player played throughout the season was 1300, over 21 hours! The total points scored based upon the NBA calculation was just over 222k, but calculated where each baseket is worth its real in-game points the total was over 246K, an increase of 24K. There were over 100k rebounds and 12k blocked shots.
+In the 2003-2004 season there were 29 unique teams and 442 unique players. The average number of minutes a player played throughout the season was 1300, over 21 hours! The total points scored was just over 222k. There were over 100k rebounds and 12k blocked shots.
 
 ```{r echo = FALSE}
 # quick view at the full stats table
@@ -573,14 +573,14 @@ nba.stat.table
 ```
 
 ### Timberwolves
-For an individual team I decided to analyze the Timberwolves as they had one of the best records at 58/24 and Kevin Garnet who was one of the top overall players during the 2003-2004 season. When looking at the top three players from their team for total points, rebounds and blocks, you can see that Garnet was was best on the team for all three. Latrell Sprewell was also a star player for the team, with the third highest points and second highest rebounds, but trailed Garnet in this category by over 800!
+For an individual team I decided to analyze the Timberwolves as they had one of the best records at 58/24 and Kevin Garnet, who was one of the top overall players during the season. When looking at the top three players from their team for total points, rebounds and blocks, you can see that Garnet was was best on the team for all three. Latrell Sprewell was also a star player for the team but trailed Garnet in rebounds by over 800!
 ```{r echo = FALSE}
 # Timberwolves top three table
 stat.table
 ```
 
 ### Top 5 by Wins
-The top 5 teams by record was the Pacers, which was the only team in the top 5 to come from the Eastern conference, the Timberwolves and the Spurs out of the Midwest division, followed by the Lakers and the Kings out of the Pacific division. The 6th place team for total overall wins was the Pisons with a record of 54 and 28 and they ended up going on to win the championship against the Lakers.
+The top 5 teams by record was the Pacers, which was the only team in the top 5 to come from the Eastern conference. Second and third was the Timberwolves and the Spurs out of the Midwest division, followed by the Lakers and the Kings out of the Pacific division. The 6th place team in this category was the Pisons with a record of 54 and 28 and while they may have not made the top 5, they went on to win the championship against the Lakers.
 
 ```{r echo = FALSE}
 # Top 5 teams by record table
@@ -588,141 +588,56 @@ top.record.table
 ```
 
 ### Top 10 points per team
-Looking at the top 10 teams by total points we see a pretty close spread, but definitely doesn't follow the same pattern as total wins. Dallas was the highest overall for points, but placed 7th in the season for number of wins, followed by Sacramento, Seattle and Milwaukee, who all save for Sacramento weren't in the top 5 teams for wins.
+Looking at the top 10 teams by total points we see a pretty close spread and oddly enough only the Kings and Lakers were in the top 5 for total wins. Dallas was the highest overall for points, but placed 7th in the season for number of wins, followed by Sacramento, Seattle and Milwaukee.
 
+```{r}
+# draw plot
+points.plot
+```
+### Timberwolves Point Distribution
+
+When comparing the point distribution across the Timberwolves, we can see three major players contributed the most in this category. Kevin Garnett provided just under 2000 points, 368 from free throws, 33 from threes and 1586 from field goals. Sam Cassell provided close to 1092 field goals, 222 threes and 289 free throws. Finally Latrell Sprewell shot 838 field goals, 297 threes and 240 free throws.
 
 ```{r}
 # draw plot
 wolves.plot
 ```
-When comparing the point distribution across the wolves, we can see three major players contributed the most in this category. Kevin Garnett provided just over 2000 points, 368 from free throws, 33 from threes and 1608 from field goals. Sam Cassell provided 1240 field goals, 222 threes and 289 free throws. Finally Latrell Sprewell shot 1036 field goals, 297 threes and 240 free throws.
+### Top 10 teams point distribution
+
+This boxplot focuses on the the point distribution across all players on each of the highest scoring teams. I found it interesting to note that Michael Redd from the Bucks and Predr Stojakovic from the Kings both scored so many points, 1776 and 1964 respectively, they were an outlier, which is when a value is greater than 1.5 times the interquartile range, or the range within the box. The Lakers actually had two outliers, Shaquille O'neal and Kobe Bryant, who scored 1439 and 1557 total points.
 
 ```{r}
 # draw plot
 top.box
 ```
-wolves total points 7740
+### Top 10 teams by type of points
 
-The third plot is a boxplot showing the point distributions across all players on each of the highest scoring teams. I found it interesting to note that the Rockets, Bucks and Trail Blazers all had one player who scored so many points they were an outlier and the Warriors actually had three players who were outliers on the plot. All of them appeared on the top scorers from part C, except Klay Thompson who was 17th overall for total points scored.
+Reviewing the same data as the above box plot, but instead looking at it by type of goal, we see a pretty even distribution. The kings lead in the three point category with 1803, but were actually in last for regular two pointers with 5004, Dallas lead this category with 5732, but was in second to last for free throws with 1484, which the Bucks lead at 1788. Dallas lead overall with 8743 points with the Grizzlies pulling in at 10th with 8005 total points.
 
+```{r}
+# draw plot
+team.point.plot
+```
+### Top 10 players by points
 
-
-When we size up the top 10 point scorers for the season we see an interesting distribution. Kevin Garnett who we looked at before 
+When we size up the top 10 point scorers for the season, we see an interesting distribution. Kevin Garnett, who we looked at before, was the season leader with 1987 total points. From the previous plot we again see Predr Stojakovic and Michael Redd placing 2nd and 5th, but neither Bryant or O'neal appear on this list, falling just outside of the top 10. While Garnett clearly dominiated in the two pointer category, Stojakovic had 200 more three pointers than Tracy Mcgrady, who was second best, and almost 22 times as many as Garnet.
 
 ```{r}
 # draw plot
 players.plot
 ```
-
-```{r}
-# draw plot
-
-```
-
-```{r}
-# draw plot
-
-```
-
-```{r}
-# draw plot
-
-```
+### Chamionships
+Looking back from 2018 to 1999 there have only been nine different teams to win the championship. 
+The Lakers had the most wins with five in 1999, 2000, 2001, 2008 and 2009. The Spurs won four in 2002, 2004, 2006, and 2013. The Heat won three 2005, 2011 and 2012. The Warriors also won three championships in 2014, 2016 and 2017. The Pisons, Celtics, Mavericks, Cavaliers and Raptors each only had one win which was in 2003, 2007, 2010, 2015 and 2018 respectively.
 
 ```{r}
 # draw map
 plot(champMap)
 ```
 
-### Top 10 beers by name
-
-Let's shift focus now and move over to the top 10 beers by name determined by the total number of reviews.
-
-As you can see from the chart below, Sierra Nevada brewing managed to achieve two different beers in the top 10 with their Celebration Ale coming in at number 3 with 3000 reviews and their Pale Ale at number 7 with almost 2600. 
-
-All 10 of these beers scored above a 4.0 average in the overall impression category with the lowest being the Arrogant Bastard ale from Stone brewing at 4.1 and the highest being Pliny The Elder from Russian River Brewing at 4.6.
-
-```{r echo = FALSE}
-# most reviewed beer by name
-plot.top10.name
-```
-
-### Top 10 beers by style
-
-Next up is our top 10 most reviewed beers by style. Our front runner here by over 30K reviews is the American IPA style with ~117K reviews, followed up by the double IPA at ~86K. The average review rating in this category is more diverse than the previous with the highest average being the American Double or Imperial Stout coming in at 4.03, and last place being the Fruit or Vegetable beer getting an average overall impression score of 3.42, a spread of 0.61 compared to 0.5 for the previous category.
-
-```{r echo = FALSE}
-# Draw Top 10 most Reviews by style bar graph
-plot.top10.style
-```
-
-### ABV Distribution by style
-
-Diving into the ABV distributions for the top 10 styles, we can see there are some pretty large differences between the group. Each has a slightly different quantile range and number of outliers. 
-
-The American Pale, IPA and Porter all have a short box indicating their inter-quartile range is relatively small. While on the other hand the American Strong Ale and the Imperial Stout both have a tall box, indicating their average range is larger. These are also the only two styles that do not have any outliers below their lower whisker.
-
-Both the Imperial Stout and Imperial IPA have the widest range at over a 30 point difference between their minimum and maximum ABV. 
-
-```{r echo = FALSE, warning = FALSE}
-# Top 10 by style with ABV boxplot
-abv.box
-```
-
-### Overall rating distribution
-Looking at the distribution for the rating provided by users in the "overall review" column we see the data is left skewed with the largest portions residing between 3.5-4.5 and 4 being the peak at nearly twice as high as 3.5 or 4.5.
-
-```{r echo = FALSE}
-# review breakdown table and chart creation
-plot.review
-```
-
-### Central Limit Theorem
-Let's further investigate this data by applying the central limit theorem. This theorem states that even if a distribution of sample means is not normally distributed, their normalized sums tends toward a normal distribution. This means that as the sample size increases and the sums are normalized, the distribution will also become more and more normalized. 
-
-Below are four histograms created using 1000 random samples from the "overall review" data with a sample size of 10, 50, 100 and 200. As the sample size increases the distribution becomes increasingly normalized, forming a bell shaped curve.
-
-```{r echo = FALSE}
-cat("population mean: ", round(mean(beer$review_overall), digits = 1),
-      " sd: " ,round(sd(beer$review_overall),digits = 2),
-      "\nSample size 10, mean: ", round(mean(xbar.1k10), digits = 1),
-      " sd: " ,round(sd(xbar.1k10),digits = 2), 
-      "\nSample size 50, mean: ", round(mean(xbar.1k20), digits = 1),
-      " sd: " ,round(sd(xbar.1k20),digits = 2),
-      "\nSample size 100, mean: ", round(mean(xbar.1k30), digits = 1),
-      " sd: " ,round(sd(xbar.1k30),digits = 2), 
-      "\nSample size 200, mean: ", round(mean(xbar.1k40), digits = 1),
-      " sd: " ,round(sd(xbar.1k40),digits = 2),sep = '')
-```
-
-```{r echo = FALSE}
-# Draw samples and hisgrams on overall_review ratings
-subplot(k10, k20, k30, k40, nrows = 2) %>% 
-  layout(title = "Overall Review Distribution")
-```
-
-### Sampling of review ratings
-By utilizing sampling techniques we are able to extract portions of a datasets to test theories or perform analysis work without having to utilize the entire dataset, all while maintaining the proportions of the original data. This can prove to be invaluable when the original dataset is too large to process for one reason or another. Care needs to be taken to ensure that the sampling methods used maintains a similar distribution as the original dataset or the analysis results could be severely skewed.
-
-Below I show charts based upon the "overall review" data using the original data and three different sampling techniques. Simple Random sampling without replacement, Systematic Sampling and stratified sampling.
-
-Simple Random without Replacement randomly selects from the dataset and does not return the data back to the set to be chosen again. This ensures each row selected will be unique and will not cause the sample to be skewed.
-
-Systematic sampling selects a number which will represent the first item to be included in the sample, then utilizes a sampling interval which determines how many items to skip over before selecting the next item for the sample. This is continued until the end of the population is reached.
-
-The last method is stratified sampling. First the population is divided into mutually exclusive sub-groups and from within those groups, members are randomly chosen to participate in the sample.
-
-Please note that each chart appears very similar in shape, but the number of samples taken for each is drastically different. The original dataset has 1.56M rows, but only 250K were used for systematic, 30K for Simple random sampling without replacement and 1k for stratified sampling. 
-
-While the shapes are very similar, upon closer inspection you can see that there are some variances. Within the systematic sampling chart the 3.5 value is only ~43K but the 4.5 is ~60k. On all of the other charts these two very close to being the same number. As I mentioned before sampling can prove to be invaluable when a dataset is simply too large to work with, but caution needs to be exercised as it can cause proportional skewing.
-
-```{r echo = FALSE}
-# Draw plots for all sampling methods
-subplot(plot.nosample, plot.samp.wor, plot.samp.syst, plot.samp.strat, nrows = 2)
-```
 
 ### Conclusion
-This is a large and diverse dataset with many avenues to explore beyond what I touched upon in this report. I could see this data being used for data mining or predictive analytics to help breweries reach new customers who have liked other similar beers, or perhaps to brew a new beer in a popular style or ABV where they do not currently have a product.  
+
 <br>
 <br>
 <br>
