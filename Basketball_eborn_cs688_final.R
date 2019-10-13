@@ -18,22 +18,21 @@ NBA.Stats[NBA.Stats$Team == 'GOL',]$Team <- 'CLE'
 NBA.Stats[NBA.Stats$Team == 'NO',]$Team <- 'LAL'
 
 # add new column which is the total points from field goals
-NBA.Stats$FGpoints <- NBA.Stats$FieldGoalsMade * 2
-NBA.Stats$threepoints <- NBA.Stats$ThreesMade * 3
-NBA.Stats$relTotal <- NBA.Stats$FGpoints + NBA.Stats$threepoints + NBA.Stats$FreeThrowsMade
+NBA.Stats$twofg <- NBA.Stats$FieldGoalsMade - NBA.Stats$ThreesMade
+NBA.Stats$twopts <- NBA.Stats$twofg * 2
+NBA.Stats$threepts <- NBA.Stats$ThreesMade * 3
+#NBA.Stats$relTotal <- NBA.Stats$FGpoints + NBA.Stats$threepoints + NBA.Stats$FreeThrowsMade
 
 # output stats
 head(NBA.Stats)
 
 # Total unique teams, players, max minutes, total points, total rebounds, total blocks
-# points
 full.stats <- data.frame('Measure' = c('Unique teams', 'Unique players', 'Average minutes', 
-                                       'Points (NBA)','Points (True)', 'Rebounds', 'Blocks'),
+                                       'Points', 'Rebounds', 'Blocks'),
                          'Total' = c(length(unique(NBA.Stats$Team)),
                                      length(unique(NBA.Stats$Name)),
                                      round(mean(NBA.Stats$TotalMinutesPlayed)),
                                      sum(NBA.Stats$TotalPoints),
-                                     sum(NBA.Stats$relTotal),
                                      sum(NBA.Stats$TotalRebounds),
                                      sum(NBA.Stats$Blocks)))
 
@@ -44,7 +43,7 @@ full.stats$Measure <- factor(full.stats$Measure,
 # Convert factors to character
 full.stats$Measure <- as.character(full.stats$Measure)
 
-# create table for top 10 abv's, total reviews and average review score
+# create table for NBA stats
 nba.stat.table <- plot_ly(
   type = 'table',
   height = 250,
@@ -68,7 +67,7 @@ nba.stat.table
 wolves <- NBA.Stats[NBA.Stats$Team == 'MIN',]
 
 # Highest Total Points
-points <- head(wolves[order(wolves$relTotal, decreasing = TRUE),c(2,28)], n=3)
+points <- head(wolves[order(wolves$TotalPoints, decreasing = TRUE),c(2,21)], n=3)
 
 # Highest Blocks
 blocks <- head(wolves[order(wolves$Blocks, decreasing = TRUE),c(2,18)], n=3)
@@ -102,7 +101,7 @@ basic.stats$Stat <- factor(basic.stats$Stat,
 basic.stats$Stat <- as.character(basic.stats$Stat)
 
 
-# create table for top 10 abv's, total reviews and average review score
+# create table for top 3 wolves players
 stat.table <- plot_ly(
   type = 'table',
   height = 400,
@@ -307,15 +306,14 @@ top.record.table
 # 1)
 # plot top 10 points per team
 # gather total points per team
-top.points <- aggregate(relTotal ~ Team, data = NBA.Stats, FUN=sum)
+top.points <- aggregate(TotalPoints ~ Team, data = NBA.Stats, FUN=sum)
 
 attach(top.points)
-top.points <- top.points[order(-relTotal),]
+top.points <- top.points[order(-TotalPoints),]
 detach(top.points)
 
 # only select top 10 teams by total points
 top10.points <- top.points[1:10,]
-#top10.points <- head(top.points[order(top.points$relTotal, decreasing = TRUE),], n=10)
 
 # Reset rownames from 1 to n
 rownames(top10.points) <- 1:nrow(top10.points)
@@ -331,15 +329,15 @@ top10.points$Team <- factor(top10.points$Team ,
 
 # 19 was an issue due to team being NA
 # seems fixed due to player cleanup at start
-all.points <- aggregate(relTotal ~ Team, data = NBA.Stats, FUN=sum) #[-19,]
+all.points <- aggregate(TotalPoints ~ Team, data = NBA.Stats, FUN=sum) #[-19,]
 
 # average points across all teams
-avg.points <- round(mean(all.points$relTotal))
+avg.points <- round(mean(all.points$TotalPoints))
 
 # setup plot
 y <- list(title = "Total Points")
 x <- list(title = 'Teams')
-points.plot <- plot_ly(top10.points, x = ~Team, y= ~relTotal,
+points.plot <- plot_ly(top10.points, x = ~Team, y= ~TotalPoints,
                        type='bar', color = ~Team)%>% 
   add_trace(y = avg.points, name = 'League Avg Points', type = 'scatter', 
             mode = 'lines', color = I('black'))%>%
@@ -350,14 +348,15 @@ points.plot
 
 # 2)
 # scorers breakdown for the wolves
-# number of FieldGoalsMade, ThreesMade, FreeThrowsMade
-wolves.points <- wolves[c(2,26,27,11)]
+# points from of 2pt Field Goals , Threes and Free Throws Made
+# twopts, threepts, FreeThrowsMade
+wolves.points <- wolves[c(2,27,28,11)]
 
-# Create boxplot based on top 10 beer styles with ABV information
+# Create plot for all wolves players by types of points made
 y <- list(title = "Total Points")
 x <- list(title = 'Players')
-wolves.plot <- plot_ly(wolves.points, x = ~Name, y = ~FGpoints, type = 'bar', name = 'Field Goals')%>% 
-  add_trace(y = ~threepoints, name =  'Threes' )%>%
+wolves.plot <- plot_ly(wolves.points, x = ~Name, y = ~twopts, type = 'bar', name = 'Field Goals')%>% 
+  add_trace(y = ~threepts, name =  'Threes' )%>%
   add_trace(y = ~FreeThrowsMade, name = 'Free Throws' )%>%
   layout(xaxis = x, yaxis = y, title = "Point Distribution of the Timber Wolves", barmode = 'stack')
 
@@ -390,22 +389,35 @@ top.box
 
 # 4)
 # top 10 scorers
-# number of FieldGoalsMade, ThreesMade, FreeThrowsMade
+# points from of 2pt Field Goals , Threes and Free Throws Made
+# twopts, threepts, FreeThrowsMade
 
 # players
 players <- head(NBA.Stats[order(NBA.Stats$TotalPoints, decreasing = TRUE),c(2)], n=10)
 
 # FieldGoalsMade, ThreesMade, FreeThrowsMade
-player.points <- NBA.Stats[NBA.Stats$Name %in% players, c(2,7,9,11,21)]
+player.points <- NBA.Stats[NBA.Stats$Name %in% players, c(2,27,28,11,21)]
+
+attach(player.points)
+player.points <- player.points[order(-TotalPoints),]
+detach(player.points)
+
+# Reset rownames from 1 to n
+rownames(player.points) <- 1:nrow(player.points)
+
+# drop empty factor levels
+player.points <- droplevels(player.points)
+
+# reset factors to order by frequency decending
+player.points$Name <- factor(player.points$Name , 
+                            levels = c(as.character(player.points$Name)))
 
 
-player.points <- player.points[order(player.points$TotalPoints, decreasing = TRUE),c(1:4)]
-
-# Create boxplot based on top 10 beer styles with ABV information
+# Create bar chart for top 10 scorers in the season
 y <- list(title = "Total Points")
 x <- list(title = 'Player')
-players.plot <- plot_ly(player.points, x = ~Name, y = ~FieldGoalsMade, type = 'bar', name = 'Field Goals')%>% 
-  add_trace(y = ~ThreesMade, name =  'Threes' )%>%
+players.plot <- plot_ly(player.points, x = ~Name, y = ~twopts, type = 'bar', name = 'Two pointers')%>% 
+  add_trace(y = ~threepts, name =  'Threes' )%>%
   add_trace(y = ~FreeThrowsMade, name = 'Free Throws' )%>%
   layout(xaxis = x, yaxis = y, title = "Point Distribution of the Top 10 Players", barmode = 'stack')
 
@@ -417,8 +429,13 @@ players.plot
 # players
 teams <- head(NBA.Stats[order(NBA.Stats$TotalPoints, decreasing = TRUE),c(3)], n=10)
 
-# FieldGoalsMade, ThreesMade, FreeThrowsMade
-team.points <- NBA.Stats[NBA.Stats$Team %in% teams, c(3,7,9,11)]
+# twopts, threepts, FreeThrowsMade
+team.points <- NBA.Stats[NBA.Stats$Team %in% teams, c(3,27,28,11,21)]
+
+
+attach(team.points)
+team.points <- team.points[order(-TotalPoints),]
+detach(team.points)
 
 # Reset rownames from 1 to n
 rownames(team.points) <- 1:nrow(team.points)
@@ -426,11 +443,16 @@ rownames(team.points) <- 1:nrow(team.points)
 # drop empty factor levels
 team.points <- droplevels(team.points)
 
-# Create boxplot based on top 10 beer styles with ABV information
+# reset factors to order by frequency decending
+player.points$Team <- factor(player.points$Team , 
+                             levels = c(as.character(player.points$Team)))
+
+
+# Create bar plot for point distribution across top 10 teams
 y <- list(title = "Total Points")
 x <- list(title = 'Team')
-team.point.plot <- plot_ly(team.points, x = ~Team, y = ~FieldGoalsMade, type = 'bar', name = 'Field Goals')%>% 
-  add_trace(y = ~ThreesMade, name =  'Threes' )%>%
+team.point.plot <- plot_ly(team.points, x = ~Team, y = ~twopts, type = 'bar', name = 'Field Goals')%>% 
+  add_trace(y = ~threepts, name =  'Threes' )%>%
   add_trace(y = ~FreeThrowsMade, name = 'Free Throws' )%>%
   layout(xaxis = x, yaxis = y, title = "Point Distribution of the Top 10 Teams", barmode = 'stack')
 

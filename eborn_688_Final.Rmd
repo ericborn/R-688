@@ -17,11 +17,10 @@ library('stringi')
 library('googleVis')
 library('SportsAnalytics')
 
-###############
 # a)
 # 2003-2004
 
-###### b)
+######## b)
 # pull down 2003-04 season stats
 NBA.Stats <- fetch_NBAPlayerStatistics(season = "03-04", what = c("",".Home", ".Away"))
 
@@ -29,10 +28,11 @@ NBA.Stats <- fetch_NBAPlayerStatistics(season = "03-04", what = c("",".Home", ".
 NBA.Stats[NBA.Stats$Team == 'GOL',]$Team <- 'CLE'
 NBA.Stats[NBA.Stats$Team == 'NO',]$Team <- 'LAL'
 
-# add new column which is the total points from field goals, three pointers and total points
-NBA.Stats$FGpoints <- NBA.Stats$FieldGoalsMade * 2
-NBA.Stats$threepoints <- NBA.Stats$ThreesMade * 3
-NBA.Stats$relTotal <- NBA.Stats$FGpoints + NBA.Stats$threepoints + NBA.Stats$FreeThrowsMade
+# add new column which is the total points from field goals
+NBA.Stats$twofg <- NBA.Stats$FieldGoalsMade - NBA.Stats$ThreesMade
+NBA.Stats$twopts <- NBA.Stats$twofg * 2
+NBA.Stats$threepts <- NBA.Stats$ThreesMade * 3
+#NBA.Stats$relTotal <- NBA.Stats$FGpoints + NBA.Stats$threepoints + NBA.Stats$FreeThrowsMade
 
 # output stats
 head(NBA.Stats)
@@ -45,7 +45,6 @@ full.stats <- data.frame('Measure' = c('Unique teams', 'Unique players', 'Averag
                                      length(unique(NBA.Stats$Name)),
                                      round(mean(NBA.Stats$TotalMinutesPlayed)),
                                      sum(NBA.Stats$TotalPoints),
-                                     sum(NBA.Stats$relTotal),
                                      sum(NBA.Stats$TotalRebounds),
                                      sum(NBA.Stats$Blocks)))
 
@@ -283,9 +282,6 @@ full.record.table <- plot_ly(
     line = list(width = 1, color = 'black')
   ))
 
-# Output table
-full.record.table
-
 # create table for top 5 nba teams
 top.record.table <- plot_ly(
   type = 'table',
@@ -304,9 +300,6 @@ top.record.table <- plot_ly(
     align = c('center'),
     line = list(width = 1, color = 'black')
   ))
-
-# Output table
-top.record.table
 
 ######## e)
 # 1)
@@ -350,9 +343,6 @@ points.plot <- plot_ly(top10.points, x = ~Team, y= ~relTotal,
             mode = 'lines', color = I('black'))%>%
   layout(yaxis = y, title = "Top 10 Total Points per Team", xaxis = x)
 
-# draw plot
-points.plot
-
 # 2)
 # scorers breakdown for the wolves
 # number of FieldGoalsMade, ThreesMade, FreeThrowsMade
@@ -365,9 +355,6 @@ wolves.plot <- plot_ly(wolves.points, x = ~Name, y = ~FGpoints, type = 'bar', na
   add_trace(y = ~threepoints, name =  'Threes' )%>%
   add_trace(y = ~FreeThrowsMade, name = 'Free Throws' )%>%
   layout(xaxis = x, yaxis = y, title = "Point Distribution of the Timber Wolves", barmode = 'stack')
-
-# draw plot
-wolves.plot
 
 # 3)
 # Box plot
@@ -390,9 +377,6 @@ top.box <- plot_ly(top10.full, x = ~Team, y = ~TotalPoints, type = 'box', size =
                    color = ~Team)%>% 
   layout(xaxis = x, yaxis = y, title = "Point distribution of top 10 teams")
 
-# draw plot
-top.box
-
 # 4)
 # top 10 scorers
 # number of FieldGoalsMade, ThreesMade, FreeThrowsMade
@@ -410,9 +394,6 @@ players.plot <- plot_ly(player.points, x = ~Name, y = ~FieldGoalsMade, type = 'b
   add_trace(y = ~ThreesMade, name =  'Threes' )%>%
   add_trace(y = ~FreeThrowsMade, name = 'Free Throws' )%>%
   layout(xaxis = x, yaxis = y, title = "Point Distribution of the Top 10 Players", barmode = 'stack')
-
-# draw plot
-players.plot
 
 # 5)
 # score breakdown per top 10 teams
@@ -435,9 +416,6 @@ team.point.plot <- plot_ly(team.points, x = ~Team, y = ~FieldGoalsMade, type = '
   add_trace(y = ~ThreesMade, name =  'Threes' )%>%
   add_trace(y = ~FreeThrowsMade, name = 'Free Throws' )%>%
   layout(xaxis = x, yaxis = y, title = "Point Distribution of the Top 10 Teams", barmode = 'stack')
-
-# draw plot
-team.point.plot
 
 # f)
 # champ names
@@ -558,10 +536,6 @@ champMap <- gvisMap(map.df,
                                   enableScrollWheel=TRUE,
                                   mapType='terrain', 
                                   useMapTypeControl=TRUE))
-# draw map
-plot(champMap)
-
-
 ```
 ### League, Season and Data
 I chose to collect and analyze data from the 2003-2004 season of the NBA. The data was downloaded with the R SportsAnalytics package, which sources the data from http://www.dougstats.com. This data includes the players name, team, position, number of games played, total minutes played and 19 other columns pertaining to their performance throughout the season.
@@ -608,6 +582,8 @@ When comparing the point distribution across the wolves, we can see three major 
 # draw plot
 top.box
 ```
+wolves total points 7740
+
 The third plot is a boxplot showing the point distributions across all players on each of the highest scoring teams. I found it interesting to note that the Rockets, Bucks and Trail Blazers all had one player who scored so many points they were an outlier and the Warriors actually had three players who were outliers on the plot. All of them appeared on the top scorers from part C, except Klay Thompson who was 17th overall for total points scored.
 
 
