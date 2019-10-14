@@ -605,7 +605,7 @@ nba.stat.table
 
 ### Timberwolves
 <font size="2">
-For an individual team I decided to analyze the Timberwolves as they had one of the best records at 58/24 and Kevin Garnet, who was one of the top overall players during the season. When looking at the top three players from their team for total points, rebounds and blocks, you can see that Garnet was the best on the team for all three. Latrell Sprewell was also a star player for the team but trailed Garnet in rebounds by over 800!
+For an individual team, I decided to analyze the Timberwolves as they had one of the best records at 58/24 and Kevin Garnet, who was one of the top overall players during the season. When looking at the top three players from their team for total points, rebounds and blocks, you can see that Garnet was the best on the team for all three. Latrell Sprewell was also a star player for the team, but trailed Garnet in rebounds by over 800!
 </font>
 
 ```{r echo = FALSE}
@@ -625,9 +625,9 @@ top.record.table
 ```
 
 
-### Top 10 points per team
+### Top 10 Points Per Team
 <font size="2">
-Looking at the top 10 teams by total points we see a pretty close spread and oddly enough only the Kings and Lakers were in the top 5 for total wins. Dallas was the highest overall for points, but placed 7th in the season for number of wins, followed by Sacramento, Seattle and Milwaukee.
+Looking at the top 10 teams by total points we see a pretty close spread and oddly enough only the Kings and Lakers were in the top 5 for total wins. Mavericks was the highest overall for points, but placed 7th in the season for number of wins, followed by the Kings, Supersonics and the Bucks.
 </font>
 
 
@@ -639,7 +639,7 @@ points.plot
 
 ### Timberwolves Point Distribution
 <font size="2">
-When comparing the point distribution across the Timberwolves, we can see three major players contributed the most in this category. Kevin Garnett provided just under 2000 points, 368 from free throws, 33 from threes and 1586 from field goals. Sam Cassell provided close to 1092 field goals, 222 threes and 289 free throws. Finally, Latrell Sprewell shot 838 field goals, 297 threes and 240 free throws.
+When comparing the point distribution across the Timberwolves, we can see three players contributed the most in this category. Kevin Garnett provided just under 2000 points, 368 from free throws, 33 from threes and 1586 from field goals. Sam Cassell provided close to 1092 field goals, 222 threes and 289 free throws. Finally, Latrell Sprewell shot 838 field goals, 297 threes and 240 free throws.
 </font>
 
 
@@ -649,7 +649,7 @@ wolves.plot
 ```
 
 
-### Top 10 teams point distribution
+### Top 10 Teams Point Distribution
 <font size="2">
 This boxplot focuses on the point distribution across all players on each of the highest scoring teams. I found it interesting to note that Michael Redd from the Bucks and Predr Stojakovic from the Kings both scored so many points, 1776 and 1964 respectively, they were an outlier, which is when a value is greater than 1.5 times the interquartile range, or the range within the box. The Lakers actually had two outliers, Shaquille O'neal and Kobe Bryant, who scored 1439 and 1557 total points.
 </font>
@@ -661,9 +661,9 @@ top.box
 ```
 
 
-### Top 10 teams by type of points
+### Top 10 Teams by Type of Points
 <font size="2">
-Reviewing the same data as the above box plot, but instead looking at it by type of goal, we see a pretty even distribution. The kings lead in the three-point category with 1803, but were actually in last for regular two pointers with 5004, Dallas lead this category with 5732, but was in second to last for free throws with 1484, which the Bucks lead at 1788. Dallas lead overall with 8743 points with the Grizzlies pulling in at 10th with 8005 total points.
+Reviewing the same data as the above box plot, but instead looking at it by type of goal, we see a pretty even distribution. The Kings lead in the three-point category with 1803, but were actually in last for regular two pointers with 5004, the Mavericks lead this category with 5732, but was in second to last for free throws with 1484, which the Bucks lead at 1788. The Mavericks lead overall with 8743 points, with the Grizzlies pulling in at 10th with 8005 total points.
 </font>
 
 ```{r echo = FALSE}
@@ -672,9 +672,9 @@ team.point.plot
 ```
 
 
-### Top 10 players by points
+### Top 10 Players by Points
 <font size="2">
-When we size up the top 10 point scorers for the season, we see an interesting distribution. Kevin Garnett, who we looked at before, was the season leader with 1987 total points. From the previous plot we again see Predr Stojakovic and Michael Redd placing 2nd and 5th, but neither Bryant or O'neal appear on this list, falling just outside of the top 10. While Garnett clearly dominated in the two pointer category, Stojakovic had 200 more three pointers than Tracy Mcgrady, who was second best, and almost 22 times as many as Garnet.
+When we size up the top 10 point scorers for the season, we see an interesting distribution. Kevin Garnett, who we looked at before, was the season leader with 1987 total points. From the previous plot we again see Predr Stojakovic and Michael Redd placing 2nd and 5th, but neither Kobe or Shaq appear on this list, both falling just outside of the top 10. While Garnett clearly dominated in the two pointer category, Stojakovic had 200 more three pointers than Tracy Mcgrady, who was second best and almost 22 times as many as Garnet.
 </font>
 
 ```{r echo = FALSE}
@@ -686,7 +686,7 @@ players.plot
 ### Championships
 <font size="2">
 Looking back from 2018 to 1999 there have only been nine different teams to win the championship. 
-The Lakers had the most wins with five in 1999, 2000, 2001, 2008 and 2009. The Spurs won four in 2002, 2004, 2006, and 2013. The Heat won three 2005, 2011 and 2012. The Warriors also won three championships in 2014, 2016 and 2017. The Pistons, Celtics, Mavericks, Cavaliers and Raptors each only had one win which was in 2003, 2007, 2010, 2015 and 2018 respectively.
+The Lakers had the most wins with five in 1999, 2000, 2001, 2008 and 2009. The Spurs won four in 2002, 2004, 2006, and 2013. The Heat won three 2005, 2011 and 2012. The Warriors also won three championships in 2014, 2016 and 2017. The Pistons, Celtics, Mavericks, Cavaliers and Raptors each only had one win, which was in 2003, 2007, 2010, 2015 and 2018 respectively.
 </font>
 
 ```{r echo = FALSE, results='asis'}
@@ -697,7 +697,7 @@ print(champMap)
 
 ### Conclusion
 <font size="2">
-In conclusion I learned a lot about the 2003-2004 NBA season from this project. While the Pistons may not have made the top 5 for overall record, they went on to defeat the Lakers who had both Kobe and O'neal in their primes. Kevin Garnet had his career highest total points and Predr Stojakovic had a career high number of three-pointers this season.
+In conclusion I learned a lot about the 2003-2004 NBA season from this project. While the Pistons may not have made the top 5 for overall record, they went on to defeat the Lakers, who had both Kobe and Shaq in their primes. Kevin Garnet had his career high for total points and Predr Stojakovic had his career high for number of three-pointers in a season.
 </font>
 <br>
 <br>
