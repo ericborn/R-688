@@ -46,7 +46,7 @@ full.stats$Measure <- as.character(full.stats$Measure)
 # create table for NBA stats
 nba.stat.table <- plot_ly(
   type = 'table',
-  height = 250,
+  height = 225,
   width = 500,
   header = list(
     values = c('Measure', 'Total'),
@@ -87,15 +87,15 @@ basic.stats <- data.frame("Player" = c(points[[1]][1], points[[1]][2], points[[1
                                       blocks[[2]][1], blocks[[2]][2], blocks[[2]][3]))
 
 # reset factors to order by player column
-basic.stats$Player <- factor(basic.stats$Player, 
-                              levels = c(as.character(basic.stats$Player)))
+# basic.stats$Player <- factor(basic.stats$Player, 
+#                               levels = c(as.character(basic.stats$Player)))
 
 # Convert factors to character
 basic.stats$Player <- as.character(basic.stats$Player)
 
 # reset factors to order by stat column
-basic.stats$Stat <- factor(basic.stats$Stat, 
-                             levels = c(as.character(basic.stats$Stat)))
+# basic.stats$Stat <- factor(basic.stats$Stat, 
+#                              levels = c(as.character(basic.stats$Stat)))
 
 # Convert factors to character
 basic.stats$Stat <- as.character(basic.stats$Stat)
@@ -104,7 +104,7 @@ basic.stats$Stat <- as.character(basic.stats$Stat)
 # create table for top 3 wolves players
 stat.table <- plot_ly(
   type = 'table',
-  height = 400,
+  height = 275,
   width = 700,
   header = list(
     values = c('Player', 'Stat', 'Total'),
@@ -224,31 +224,38 @@ teams.df$Team <- factor(teams.df$Team,
 # Convert factors to character
 teams.df$Team <- as.character(teams.df$Team)
 
-
+# TODO
+######## !!!!!!!!!!ERROR!!!!!!!!!!
 # reset factors to order by stat column
-teams.df$Conference <- factor(teams.df$Conference, 
-                           levels = c(as.character(teams.df$Conference)))
+# teams.df$Conference <- factor(teams.df$Conference, 
+#                            levels = c(as.character(teams.df$Conference)))
 
 # Convert factors to character
 teams.df$Conference <- as.character(teams.df$Conference)
 
+# TODO
+######## !!!!!!!!!!ERROR!!!!!!!!!!
 # reset factors to order by stat column
-teams.df$Division <- factor(teams.df$Division, 
-                              levels = c(as.character(teams.df$Division)))
+# teams.df$Division <- factor(teams.df$Division, 
+#                               levels = c(as.character(teams.df$Division)))
 
 # Convert factors to character
 teams.df$Division <- as.character(teams.df$Division)
 
+# TODO
+######## !!!!!!!!!!ERROR!!!!!!!!!!
 # reset factors to order by stat column
-teams.df$Win <- factor(teams.df$Win, 
-                            levels = c(as.character(teams.df$Win)))
+# teams.df$Win <- factor(teams.df$Win, 
+#                             levels = c(as.character(teams.df$Win)))
 
 # Convert factors to character
 teams.df$Win <- as.character(teams.df$Win)
 
+# TODO
+######## !!!!!!!!!!ERROR!!!!!!!!!!
 # reset factors to order by stat column
-teams.df$Loss <- factor(teams.df$Loss, 
-                       levels = c(as.character(teams.df$Loss)))
+# teams.df$Loss <- factor(teams.df$Loss, 
+#                        levels = c(as.character(teams.df$Loss)))
 
 # Convert factors to character
 teams.df$Loss <- as.character(teams.df$Loss)
@@ -283,7 +290,7 @@ full.record.table
 # create table for top 5 nba teams
 top.record.table <- plot_ly(
   type = 'table',
-  height = 800,
+  height = 200,
   columnwidth = c(40, 30, 30, 15, 15),
   header = list(
     values = c('Team', 'Conference', 'Division', 'Win', 'Loss'),
