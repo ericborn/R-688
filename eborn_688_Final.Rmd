@@ -1,9 +1,9 @@
 ---
 title: "2003-2004 NBA Analysis"
-author: Eric Born - CS688 Final Project
+author: "Eric Born - CS688 Final Project"
 output: html_document
 ---
-```{r include = FALSE, warning = FALSE, error = TRUE}
+```{r include=FALSE}
 #############
 # Start setup
 #############
@@ -16,7 +16,9 @@ library('plotly')
 library('stringi')
 library('googleVis')
 library('SportsAnalytics')
+#```
 
+#```{r error = TRUE}
 # a)
 # 2003-2004
 
@@ -95,15 +97,15 @@ basic.stats <- data.frame("Player" = c(points[[1]][1], points[[1]][2], points[[1
                                       blocks[[2]][1], blocks[[2]][2], blocks[[2]][3]))
 
 # reset factors to order by player column
-basic.stats$Player <- factor(basic.stats$Player, 
-                              levels = c(as.character(basic.stats$Player)))
+# basic.stats$Player <- factor(basic.stats$Player, 
+#                               levels = c(as.character(basic.stats$Player)))
 
 # Convert factors to character
 basic.stats$Player <- as.character(basic.stats$Player)
 
 # reset factors to order by stat column
-basic.stats$Stat <- factor(basic.stats$Stat, 
-                             levels = c(as.character(basic.stats$Stat)))
+# basic.stats$Stat <- factor(basic.stats$Stat, 
+#                              levels = c(as.character(basic.stats$Stat)))
 
 # Convert factors to character
 basic.stats$Stat <- as.character(basic.stats$Stat)
@@ -221,6 +223,17 @@ teams.df = data.frame(Team=teams,
                       Win=c(mid.wins, pac.wins, atl.wins, cen.wins),
                       Loss=c(mid.loss,pac.loss,atl.loss,cen.loss))
 
+# Create dataframe from win/loss data
+teams.df = data.frame(Team=teams, 
+                      Conference=c(rep('Western',length(western)),
+                                   rep('Eastern',length(eastern))),
+                      Division=c(rep('Midwest', length(midwest)),
+                                 rep('Pacific', length(pacific)),
+                                 rep('Atlantic', length(atlantic)),
+                                 rep('Central', length(central))),
+                      Win=c(mid.wins, pac.wins, atl.wins, cen.wins),
+                      Loss=c(mid.loss,pac.loss,atl.loss,cen.loss))
+
 # reset factors to order by Team column
 teams.df$Team <- factor(teams.df$Team, 
                              levels = c(as.character(teams.df$Team)))
@@ -228,31 +241,38 @@ teams.df$Team <- factor(teams.df$Team,
 # Convert factors to character
 teams.df$Team <- as.character(teams.df$Team)
 
-
+# TODO
+######## !!!!!!!!!!ERROR!!!!!!!!!!
 # reset factors to order by stat column
-teams.df$Conference <- factor(teams.df$Conference, 
-                           levels = c(as.character(teams.df$Conference)))
+# teams.df$Conference <- factor(teams.df$Conference, 
+#                            levels = c(as.character(teams.df$Conference)))
 
 # Convert factors to character
 teams.df$Conference <- as.character(teams.df$Conference)
 
+# TODO
+######## !!!!!!!!!!ERROR!!!!!!!!!!
 # reset factors to order by stat column
-teams.df$Division <- factor(teams.df$Division, 
-                              levels = c(as.character(teams.df$Division)))
+# teams.df$Division <- factor(teams.df$Division, 
+#                               levels = c(as.character(teams.df$Division)))
 
 # Convert factors to character
 teams.df$Division <- as.character(teams.df$Division)
 
+# TODO
+######## !!!!!!!!!!ERROR!!!!!!!!!!
 # reset factors to order by stat column
-teams.df$Win <- factor(teams.df$Win, 
-                            levels = c(as.character(teams.df$Win)))
+# teams.df$Win <- factor(teams.df$Win, 
+#                             levels = c(as.character(teams.df$Win)))
 
 # Convert factors to character
 teams.df$Win <- as.character(teams.df$Win)
 
+# TODO
+######## !!!!!!!!!!ERROR!!!!!!!!!!
 # reset factors to order by stat column
-teams.df$Loss <- factor(teams.df$Loss, 
-                       levels = c(as.character(teams.df$Loss)))
+# teams.df$Loss <- factor(teams.df$Loss, 
+#                        levels = c(as.character(teams.df$Loss)))
 
 # Convert factors to character
 teams.df$Loss <- as.character(teams.df$Loss)
@@ -562,7 +582,7 @@ champMap <- gvisMap(map.df,
 I chose to collect and analyze data from the 2003-2004 season of the NBA. The data was downloaded with the R SportsAnalytics package, which sources the data from http://www.dougstats.com. This data includes the players name, team, position, number of games played, total minutes played and 19 other columns pertaining to their performance throughout the season.
 
 ### Clean up
-Prior to performing any analysis, I chose to review the dataset to look for dirty data and to generate a quick summary of a few stats. I did find and correct three players who had a typo in their team name and also decided to add three calculated columns, the total number of two point field goals, the points from those goals and the total points from three point shots.
+Prior to performing any analysis, I chose to review the dataset to look for dirty data and to generate a quick summary of a few stats. I did find and correct three players who had a typo in their team name and also decided to add three calculated columns, the total number of two-point field goals, the points from those goals and the total points from three point shots.
 
 ### At a glance
 In the 2003-2004 season there were 29 unique teams and 442 unique players. The average number of minutes a player played throughout the season was 1300, over 21 hours! The total points scored was just over 222k. There were over 100k rebounds and 12k blocked shots.
@@ -573,14 +593,14 @@ nba.stat.table
 ```
 
 ### Timberwolves
-For an individual team I decided to analyze the Timberwolves as they had one of the best records at 58/24 and Kevin Garnet, who was one of the top overall players during the season. When looking at the top three players from their team for total points, rebounds and blocks, you can see that Garnet was was best on the team for all three. Latrell Sprewell was also a star player for the team but trailed Garnet in rebounds by over 800!
+For an individual team I decided to analyze the Timberwolves as they had one of the best records at 58/24 and Kevin Garnet, who was one of the top overall players during the season. When looking at the top three players from their team for total points, rebounds and blocks, you can see that Garnet was the best on the team for all three. Latrell Sprewell was also a star player for the team but trailed Garnet in rebounds by over 800!
 ```{r echo = FALSE}
 # Timberwolves top three table
 stat.table
 ```
 
 ### Top 5 by Wins
-The top 5 teams by record was the Pacers, which was the only team in the top 5 to come from the Eastern conference. Second and third was the Timberwolves and the Spurs out of the Midwest division, followed by the Lakers and the Kings out of the Pacific division. The 6th place team in this category was the Pisons with a record of 54 and 28 and while they may have not made the top 5, they went on to win the championship against the Lakers.
+The top 5 teams by record was the Pacers, which was the only team in the top 5 to come from the Eastern conference. Second and third was the Timberwolves and the Spurs out of the Midwest division, followed by the Lakers and the Kings out of the Pacific division. The 6th place team in this category was the Pistons with a record of 54 and 28 and while they may have not made the top 5, they went on to win the championship against the Lakers.
 
 ```{r echo = FALSE}
 # Top 5 teams by record table
@@ -596,7 +616,7 @@ points.plot
 ```
 ### Timberwolves Point Distribution
 
-When comparing the point distribution across the Timberwolves, we can see three major players contributed the most in this category. Kevin Garnett provided just under 2000 points, 368 from free throws, 33 from threes and 1586 from field goals. Sam Cassell provided close to 1092 field goals, 222 threes and 289 free throws. Finally Latrell Sprewell shot 838 field goals, 297 threes and 240 free throws.
+When comparing the point distribution across the Timberwolves, we can see three major players contributed the most in this category. Kevin Garnett provided just under 2000 points, 368 from free throws, 33 from threes and 1586 from field goals. Sam Cassell provided close to 1092 field goals, 222 threes and 289 free throws. Finally, Latrell Sprewell shot 838 field goals, 297 threes and 240 free throws.
 
 ```{r}
 # draw plot
@@ -604,7 +624,7 @@ wolves.plot
 ```
 ### Top 10 teams point distribution
 
-This boxplot focuses on the the point distribution across all players on each of the highest scoring teams. I found it interesting to note that Michael Redd from the Bucks and Predr Stojakovic from the Kings both scored so many points, 1776 and 1964 respectively, they were an outlier, which is when a value is greater than 1.5 times the interquartile range, or the range within the box. The Lakers actually had two outliers, Shaquille O'neal and Kobe Bryant, who scored 1439 and 1557 total points.
+This boxplot focuses on the point distribution across all players on each of the highest scoring teams. I found it interesting to note that Michael Redd from the Bucks and Predr Stojakovic from the Kings both scored so many points, 1776 and 1964 respectively, they were an outlier, which is when a value is greater than 1.5 times the interquartile range, or the range within the box. The Lakers actually had two outliers, Shaquille O'neal and Kobe Bryant, who scored 1439 and 1557 total points.
 
 ```{r}
 # draw plot
@@ -612,7 +632,7 @@ top.box
 ```
 ### Top 10 teams by type of points
 
-Reviewing the same data as the above box plot, but instead looking at it by type of goal, we see a pretty even distribution. The kings lead in the three point category with 1803, but were actually in last for regular two pointers with 5004, Dallas lead this category with 5732, but was in second to last for free throws with 1484, which the Bucks lead at 1788. Dallas lead overall with 8743 points with the Grizzlies pulling in at 10th with 8005 total points.
+Reviewing the same data as the above box plot, but instead looking at it by type of goal, we see a pretty even distribution. The kings lead in the three-point category with 1803, but were actually in last for regular two pointers with 5004, Dallas lead this category with 5732, but was in second to last for free throws with 1484, which the Bucks lead at 1788. Dallas lead overall with 8743 points with the Grizzlies pulling in at 10th with 8005 total points.
 
 ```{r}
 # draw plot
@@ -620,15 +640,15 @@ team.point.plot
 ```
 ### Top 10 players by points
 
-When we size up the top 10 point scorers for the season, we see an interesting distribution. Kevin Garnett, who we looked at before, was the season leader with 1987 total points. From the previous plot we again see Predr Stojakovic and Michael Redd placing 2nd and 5th, but neither Bryant or O'neal appear on this list, falling just outside of the top 10. While Garnett clearly dominiated in the two pointer category, Stojakovic had 200 more three pointers than Tracy Mcgrady, who was second best, and almost 22 times as many as Garnet.
+When we size up the top 10 point scorers for the season, we see an interesting distribution. Kevin Garnett, who we looked at before, was the season leader with 1987 total points. From the previous plot we again see Predr Stojakovic and Michael Redd placing 2nd and 5th, but neither Bryant or O'neal appear on this list, falling just outside of the top 10. While Garnett clearly dominated in the two pointer category, Stojakovic had 200 more three pointers than Tracy Mcgrady, who was second best, and almost 22 times as many as Garnet.
 
 ```{r}
 # draw plot
 players.plot
 ```
-### Chamionships
+### Championships
 Looking back from 2018 to 1999 there have only been nine different teams to win the championship. 
-The Lakers had the most wins with five in 1999, 2000, 2001, 2008 and 2009. The Spurs won four in 2002, 2004, 2006, and 2013. The Heat won three 2005, 2011 and 2012. The Warriors also won three championships in 2014, 2016 and 2017. The Pisons, Celtics, Mavericks, Cavaliers and Raptors each only had one win which was in 2003, 2007, 2010, 2015 and 2018 respectively.
+The Lakers had the most wins with five in 1999, 2000, 2001, 2008 and 2009. The Spurs won four in 2002, 2004, 2006, and 2013. The Heat won three 2005, 2011 and 2012. The Warriors also won three championships in 2014, 2016 and 2017. The Pistons, Celtics, Mavericks, Cavaliers and Raptors each only had one win which was in 2003, 2007, 2010, 2015 and 2018 respectively.
 
 ```{r}
 # draw map
@@ -641,4 +661,4 @@ plot(champMap)
 <br>
 <br>
 <br>
-<br>
+<br>`
