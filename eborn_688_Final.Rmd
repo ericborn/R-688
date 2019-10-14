@@ -651,7 +651,7 @@ wolves.plot
 
 ### Top 10 Teams Point Distribution
 <font size="2">
-This boxplot focuses on the point distribution across all players on each of the highest scoring teams. I found it interesting to note that Michael Redd from the Bucks and Predr Stojakovic from the Kings both scored so many points, 1776 and 1964 respectively, they were an outlier, which is when a value is greater than 1.5 times the interquartile range, or the range within the box. The Lakers actually had two outliers, Shaquille O'neal and Kobe Bryant, who scored 1439 and 1557 total points.
+This boxplot focuses on the point distribution across all players on each of the highest scoring teams. I found it interesting to note that Michael Redd from the Bucks and Predr Stojakovic from the Kings both scored so many points, 1776 and 1964 respectively, they were an outlier, which is when a value is greater than 1.5 times the interquartile range, or the range within the box. The Lakers actually had two outliers, Shaquille O'Neal and Kobe Bryant, who scored 1439 and 1557 total points.
 </font>
 
 
@@ -674,7 +674,7 @@ team.point.plot
 
 ### Top 10 Players by Points
 <font size="2">
-When we size up the top 10 point scorers for the season, we see an interesting distribution. Kevin Garnett, who we looked at before, was the season leader with 1987 total points. From the previous plot we again see Predr Stojakovic and Michael Redd placing 2nd and 5th, but neither Kobe or Shaq appear on this list, both falling just outside of the top 10. While Garnett clearly dominated in the two pointer category, Stojakovic had 200 more three pointers than Tracy Mcgrady, who was second best and almost 22 times as many as Garnet.
+When we size up the top 10 point scorers for the season, we see an interesting distribution. Kevin Garnett, who we looked at before, was the season leader with 1987 total points. From the previous plot we again see Predr Stojakovic and Michael Redd placing 2nd and 5th, but neither Kobe or Shaq appear on this list, both falling just outside of the top 10. While Garnett clearly dominated in the two pointer category, Stojakovic had 200 more three pointers than Tracy McGrady, who was second best and almost 22 times as many as Garnet.
 </font>
 
 ```{r echo = FALSE}

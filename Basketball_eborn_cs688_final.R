@@ -1,3 +1,7 @@
+# Eric Born
+# CS688 Final Project
+# 2003-2004 NBA Analysis
+
 library('XML')
 library('rvest')
 library('purrr')
@@ -7,7 +11,7 @@ library('googleVis')
 library('SportsAnalytics')
 
 # a)
-# 2003-2004
+# The 2003-2004 season of the NBA is being used as the dataset
 
 ######## b)
 # pull down 2003-04 season stats
@@ -86,20 +90,11 @@ basic.stats <- data.frame("Player" = c(points[[1]][1], points[[1]][2], points[[1
                                       rebounds[[2]][1], rebounds[[2]][2], rebounds[[2]][3],
                                       blocks[[2]][1], blocks[[2]][2], blocks[[2]][3]))
 
-# reset factors to order by player column
-# basic.stats$Player <- factor(basic.stats$Player, 
-#                               levels = c(as.character(basic.stats$Player)))
-
 # Convert factors to character
 basic.stats$Player <- as.character(basic.stats$Player)
 
-# reset factors to order by stat column
-# basic.stats$Stat <- factor(basic.stats$Stat, 
-#                              levels = c(as.character(basic.stats$Stat)))
-
 # Convert factors to character
 basic.stats$Stat <- as.character(basic.stats$Stat)
-
 
 # create table for top 3 wolves players
 stat.table <- plot_ly(
@@ -224,38 +219,14 @@ teams.df$Team <- factor(teams.df$Team,
 # Convert factors to character
 teams.df$Team <- as.character(teams.df$Team)
 
-# TODO
-######## !!!!!!!!!!ERROR!!!!!!!!!!
-# reset factors to order by stat column
-# teams.df$Conference <- factor(teams.df$Conference, 
-#                            levels = c(as.character(teams.df$Conference)))
-
 # Convert factors to character
 teams.df$Conference <- as.character(teams.df$Conference)
-
-# TODO
-######## !!!!!!!!!!ERROR!!!!!!!!!!
-# reset factors to order by stat column
-# teams.df$Division <- factor(teams.df$Division, 
-#                               levels = c(as.character(teams.df$Division)))
 
 # Convert factors to character
 teams.df$Division <- as.character(teams.df$Division)
 
-# TODO
-######## !!!!!!!!!!ERROR!!!!!!!!!!
-# reset factors to order by stat column
-# teams.df$Win <- factor(teams.df$Win, 
-#                             levels = c(as.character(teams.df$Win)))
-
 # Convert factors to character
 teams.df$Win <- as.character(teams.df$Win)
-
-# TODO
-######## !!!!!!!!!!ERROR!!!!!!!!!!
-# reset factors to order by stat column
-# teams.df$Loss <- factor(teams.df$Loss, 
-#                        levels = c(as.character(teams.df$Loss)))
 
 # Convert factors to character
 teams.df$Loss <- as.character(teams.df$Loss)
@@ -550,22 +521,6 @@ coords <- gsub(" ", "", coords)
 
 # flatten list of names
 names <- unlist(names)
-
-# static set of winners and coords
-# toronto      '43.643333:79.379167'
-# golden state '37.768056:122.3875'
-# cleveland    '41.496389:81.688056'
-# san antonio  '29.426944:98.4375'
-# miami        '25.781389:80.188056'
-# dallas       '32.790556:96.810278'
-# lakers       '34.043056:118.267222'
-# boston       '42.366303:71.062228'
-# detroit      '42.696944:83.245556'
-
-# coords <- c('43.643333:-79.379167', '37.768056:-122.3875', '41.496389:-81.688056',
-#             '29.426944:-98.4375', '25.781389:-80.188056', '32.790556:-96.810278',
-#             '34.043056:-118.267222', '42.366303:-71.062228', '42.696944:-83.245556')
-
 
 # all teams and their coordinates as separate columns in a df
 full.df <- data.frame(team = names, coords = coords)
