@@ -591,9 +591,9 @@ I chose to collect and analyze data from the 2003-2004 season of the NBA. The da
 Prior to performing any analysis, I chose to review the dataset to look for dirty data and to generate a quick summary of a few stats. I did find and correct three players who had a typo in their team name and also decided to add three calculated columns, the total number of two-point field goals, the points from those goals and the total points from three point shots.
 </font>
 
-### At a glance
+### At a Glance
 <font size="2">
-In the 2003-2004 season there were 29 unique teams and 442 unique players. The average number of minutes a player played throughout the season was 1300, over 21 hours! The season saw a total of just over 222k points scored, over 100k rebounds and 12k blocked shots.
+In the 2003-2004 season there were 29 unique teams and 442 unique players. The average number of minutes a player played throughout the season was 1,300, over 21 hours! The season saw a total of just over 222,000 points scored, over 100,000 rebounds and 12,000 blocked shots.
 </font>
 
 
@@ -627,7 +627,7 @@ top.record.table
 
 ### Top 10 Points Per Team
 <font size="2">
-Looking at the top 10 teams by total points we see a pretty close spread and oddly enough only the Kings and Lakers were in the top 5 for total wins. Mavericks was the highest overall for points, but placed 7th in the season for number of wins, followed by the Kings, Supersonics and the Bucks.
+Looking at the top 10 teams by total points we see a pretty close spread and oddly enough only the Kings and Lakers were in the top 5 for total wins. The Mavericks was the highest overall for points, but placed 7th in the season for number of wins, followed by the Kings, Supersonics and the Bucks.
 </font>
 
 
@@ -639,7 +639,7 @@ points.plot
 
 ### Timberwolves Point Distribution
 <font size="2">
-When comparing the point distribution across the Timberwolves, we can see three players contributed the most in this category. Kevin Garnett provided just under 2000 points, 368 from free throws, 33 from threes and 1586 from field goals. Sam Cassell provided close to 1092 field goals, 222 threes and 289 free throws. Finally, Latrell Sprewell shot 838 field goals, 297 threes and 240 free throws.
+When comparing the point distribution across the Timberwolves, we can see three players contributed the most in this category. Kevin Garnett provided just under 2,000 points, 368 from free throws, 33 from threes and 1,586 from field goals. Sam Cassell provided 1,092 field goals, 222 threes and 289 free throws. Finally, Latrell Sprewell shot 838 field goals, 297 threes and 240 free throws.
 </font>
 
 
@@ -651,7 +651,7 @@ wolves.plot
 
 ### Top 10 Teams Point Distribution
 <font size="2">
-This boxplot focuses on the point distribution across all players on each of the highest scoring teams. I found it interesting to note that Michael Redd from the Bucks and Predr Stojakovic from the Kings both scored so many points, 1776 and 1964 respectively, they were an outlier, which is when a value is greater than 1.5 times the interquartile range, or the range within the box. The Lakers actually had two outliers, Shaquille O'Neal and Kobe Bryant, who scored 1439 and 1557 total points.
+This boxplot focuses on the point distribution across all players on each of the highest scoring teams. I found it interesting to note that Michael Redd from the Bucks and Predr Stojakovic from the Kings both scored so many points, 1,776 and 1,964 respectively, they were an outlier, which is when a value is greater than 1.5 times the interquartile range, or the range within the box. The Lakers actually had two outliers, Shaquille O'Neal and Kobe Bryant, who scored 1,439 and 1,557 total points.
 </font>
 
 
@@ -663,7 +663,7 @@ top.box
 
 ### Top 10 Teams by Type of Points
 <font size="2">
-Reviewing the same data as the above box plot, but instead looking at it by type of goal, we see a pretty even distribution. The Kings lead in the three-point category with 1803, but were actually in last for regular two pointers with 5004, the Mavericks lead this category with 5732, but was in second to last for free throws with 1484, which the Bucks lead at 1788. The Mavericks lead overall with 8743 points, with the Grizzlies pulling in at 10th with 8005 total points.
+Reviewing the same data as the above box plot, but instead looking at it by type of goal, we see a pretty even distribution. The Kings lead in the three-point category with 1,803, but are actually in last for regular two pointers with 5,004. The Mavericks lead this category with 5,732, but are in second to last for free throws with 1,484, which the Bucks lead at 1,788. The Mavericks lead overall with 8,743 points, with the Grizzlies pulling in at 10th with 8,005 total points.
 </font>
 
 ```{r echo = FALSE}
@@ -674,7 +674,7 @@ team.point.plot
 
 ### Top 10 Players by Points
 <font size="2">
-When we size up the top 10 point scorers for the season, we see an interesting distribution. Kevin Garnett, who we looked at before, was the season leader with 1987 total points. From the previous plot we again see Predr Stojakovic and Michael Redd placing 2nd and 5th, but neither Kobe or Shaq appear on this list, both falling just outside of the top 10. While Garnett clearly dominated in the two pointer category, Stojakovic had 200 more three pointers than Tracy McGrady, who was second best and almost 22 times as many as Garnet.
+When we size up the top 10 point scorers for the season, we see an interesting distribution. Kevin Garnett, who we looked at before, was the season leader with 1,987 total points. From the previous plot we again see Predr Stojakovic and Michael Redd placing 2nd and 5th, but neither Kobe or Shaq appear on this list, both falling just outside of the top 10. While Garnett clearly dominated in the two pointer category, Stojakovic had 200 more three pointers than Tracy McGrady, who was second best and almost 22 times as many as Garnet.
 </font>
 
 ```{r echo = FALSE}
